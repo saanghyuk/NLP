@@ -1,0 +1,2 @@
+- conda activate py38
+- python3 -m train --model_fn model.pth --gpu_id -1 --batch_size 512 --n_epochs 20 --verbose 2
