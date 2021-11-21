@@ -29,6 +29,8 @@ def define_argparser():
     p.add_argument('--n_layers', type=int, default=4)
     p.add_argument('--dropout_p', type=float, default=.2)
 
+    # threshold for gradient clipping
+    # check the trainer.py
     p.add_argument('--max_grad', type=float, default=-1)
 
     config = p.parse_args()
