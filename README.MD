@@ -19,8 +19,8 @@
 
 #### 2. NLP Basic Concepts
 
-| date           | contents             |                                                              |
-| -------------- | -------------------- | ------------------------------------------------------------ |
-| 2021/11/22 Mon | Basic Concept, Regex | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex) |
-| 2022/11/23 Tue |                      |                                                              |
+| date           | contents                                                     |                                                              |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 2021/11/22 Mon | Basic Concept, Regex                                         | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex) |
+| 2022/11/23 Tue | Corpus Labeling, Tokenization, Subword Segmentation(BPE), Detokenization, Mini-Batch | Code1, Code2, Code3, Code4                                   |
 
