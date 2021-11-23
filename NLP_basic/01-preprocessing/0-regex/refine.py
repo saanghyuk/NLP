@@ -20,7 +20,6 @@ def read_regex(fn):
                                   1] if tokens[0].endswith('\n') else tokens[0]
             tokens[1] = tokens[1][:
                                   -1] if tokens[1].endswith('\n') else tokens[1]
-            print(tokens)
             regexs += [(tokens[0], tokens[1])]
 
     f.close()
@@ -33,16 +32,20 @@ if __name__ == "__main__":
     fn = sys.argv[1]
     # if assuming file is tsv file, which index you want to check?
     target_index = int(sys.argv[2])
-
     regexs = read_regex(fn)
-    print(regexs)
+    index = 1
     for line in sys.stdin:
+
         if line.strip() != "":
             columns = line.strip().split('\t')
             for r in regexs:
-                columns[target_index] = re.sub(
-                    r'%s' % r[0], r[1], columns[target_index].strip())
+                try:
+                    columns[target_index] = re.sub(
+                        r'%s' % r[0], r[1], columns[target_index].strip())
+                except:
+                    pass
 
             sys.stdout.write('\t'.join(columns) + "\n")
+            index += 1
         else:
             sys.stdout.write('\n')
