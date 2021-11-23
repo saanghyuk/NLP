@@ -1,8 +1,11 @@
 ## Studying NLP
 
-Start Date : 2021/11/18
+> Start Date : 2021/11/18
 
-
+- **Materials**
+  - [Coursera NLP](https://www.coursera.org/specializations/natural-language-processing?)
+  - [HuggingFace](https://huggingface.co/)
+  - FastCampus NLP
 
 ####	1. Review Neural Network and Pytorch
 | date           | conents                                                      |                                                              |
@@ -16,8 +19,8 @@ Start Date : 2021/11/18
 
 #### 2. NLP Basic Concepts
 
-| date           | contents |      |
-| -------------- | -------- | ---- |
-| 2021/11/22 Mon | Regex    | Code |
-|                |          |      |
+| date           | contents             |                                                              |
+| -------------- | -------------------- | ------------------------------------------------------------ |
+| 2021/11/22 Mon | Basic Concept, Regex | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex) |
+| 2022/11/23 Tue |                      |                                                              |
 
