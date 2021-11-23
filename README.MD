@@ -22,5 +22,7 @@
 | date           | contents                                                     |                                                              |
 | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 2021/11/22 Mon | Basic Concept, Regex                                         | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex) |
-| 2022/11/23 Tue | Corpus Labeling, Tokenization, Subword Segmentation(BPE), Detokenization, TorchText | [Code1](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex), [Code2](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/02-tokenization), [Code3](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/03-subword_segmentation), [Code4](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/04-detokenization), Code5 |
+| 2022/11/23 Tue | Corpus Labeling, Tokenization, Subword Segmentation(BPE), Detokenization, TorchText, WordSense, WordNet, TF-IDF | [Code1](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex), [Code2](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/02-tokenization), [Code3](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/03-subword_segmentation), [Code4](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/04-detokenization), [Code5](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/05-torchtext) |
+| 2022/11/24 Wed |                                                              |                                                              |
+|                |                                                              |                                                              |
 
