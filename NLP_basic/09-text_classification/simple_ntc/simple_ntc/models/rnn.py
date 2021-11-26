@@ -5,7 +5,7 @@ class RNNClassifier(nn.Module):
 
     def __init__(
         self,
-        input_size, # the number of vaca
+        input_size, # the number of voca
         word_vec_size, # size of the word vector(vector size after embeded)
         hidden_size, # in RNN, vector size of the hidden state/cell state
         n_classes, # the number of classes
