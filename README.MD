@@ -25,5 +25,5 @@
 | 2021/11/23 Tue | Corpus Labeling, Tokenization, Subword Segmentation(BPE), Detokenization, TorchText, WordSense, WordNet, TF-IDF | [Code1](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/01-preprocessing/0-regex), [Code2](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/02-tokenization), [Code3](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/03-subword_segmentation), [Code4](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/04-detokenization), [Code5](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/05-torchtext) |
 | 2021/11/24 Wed | Word2Vec(Skip Gram), GloVe, FastText                         | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/08-word_embedding) |
 | 2021/11/25 Thu | Text Classification with RNN                                 | [Code](https://github.com/saanghyuk/NLP/blob/main/NLP_basic/09-text_classification/simple_ntc/simple_ntc/models/rnn.py) |
-| 2021/11/26 Fri | Text Classification with CNN                                 | Code                                                         |
+| 2021/11/26 Fri | Text Classification with CNN                                 | [Code](https://github.com/saanghyuk/NLP/blob/main/NLP_basic/09-text_classification/simple_ntc/simple_ntc/models/cnn.py) |
 

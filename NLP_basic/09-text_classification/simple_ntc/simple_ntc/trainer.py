@@ -39,15 +39,20 @@ class MyEngine(Engine):
         # before to take another step in gradient descent.
         engine.model.train() # Because we assign model as class variable, we can easily access to it.
         engine.optimizer.zero_grad()
-
+        
+        # x : index of one_hot vector
+        # y : class index 
         x, y = mini_batch.text, mini_batch.label
         x, y = x.to(engine.device), y.to(engine.device)
-
+        
+        # x=(batch_size, sentence length)
+        # cut with the max_length of sentence from config
         x = x[:, :engine.config.max_length]
 
         # Take feed-forward
+        # |y_hat| = (batch_size, # of classes)
         y_hat = engine.model(x)
-
+        
         loss = engine.crit(y_hat, y)
         loss.backward()
 
@@ -100,6 +105,8 @@ class MyEngine(Engine):
         # Attaching would be repaeted for serveral metrics.
         # Thus, we can reduce the repeated codes by using this function.
         def attach_running_average(engine, metric_name):
+            # because train engine returns the output as dictionary with the keys of metric names
+            # transform here with output_transform arguments
             RunningAverage(output_transform=lambda x: x[metric_name]).attach(
                 engine,
                 metric_name,
@@ -184,6 +191,7 @@ class Trainer():
             model, crit, optimizer, self.config
         )
 
+        # custom function above
         MyEngine.attach(
             train_engine,
             validation_engine,
@@ -192,7 +200,8 @@ class Trainer():
 
         def run_validation(engine, validation_engine, valid_loader):
             validation_engine.run(valid_loader, max_epochs=1)
-
+        
+        # if one epoch is finished, run the validation codes
         train_engine.add_event_handler(
             Events.EPOCH_COMPLETED, # event
             run_validation, # function

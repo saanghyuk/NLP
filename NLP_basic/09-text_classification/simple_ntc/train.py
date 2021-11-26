@@ -32,6 +32,7 @@ def define_argparser():
     p.add_argument('--word_vec_size', type=int, default= 256)
     p.add_argument('--dropout', type=float, default=.3)
 
+    # used in trainer.py
     p.add_argument('--max_length', type=int, default=256)
     
     p.add_argument('--rnn', action='store_true')

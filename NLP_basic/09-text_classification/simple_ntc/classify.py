@@ -9,7 +9,7 @@ if version[0] <= 0 and version[1] < 9:
 else:
     from torchtext.legacy import data
 
-from simple_ntc.models.rnn import RNNClassifier
+from simple_ntc.models.rnn import RNNClassifier 
 from simple_ntc.models.cnn import CNNClassifier
 
 
@@ -22,6 +22,7 @@ def define_argparser():
     p.add_argument('--model_fn', required=True)
     p.add_argument('--gpu_id', type=int, default=-1)
     p.add_argument('--batch_size', type=int, default=256)
+    # Multi class problems, we could make output of k.  
     p.add_argument('--top_k', type=int, default=1)
     p.add_argument('--max_length', type=int, default=256)
     
@@ -134,17 +135,21 @@ def main(config):
             # Concatenate the mini-batch wise result
             y_hat = torch.cat(y_hat, dim=0)
             # |y_hat| = (len(lines), n_classes)
-
+                
             y_hats += [y_hat]
-
+            # | y_hats | = (len(lines), n_classes) * number of models in ensemble
             model.cpu()
         # Merge to one tensor for ensemble result and make probability from log-prob.
         y_hats = torch.stack(y_hats).exp()
         # |y_hats| = (len(ensemble), len(lines), n_classes)
+        
         y_hats = y_hats.sum(dim=0) / len(ensemble) # Get average
+        # or y_hats.mean(dim=0)
         # |y_hats| = (len(lines), n_classes)
 
         probs, indice = y_hats.topk(config.top_k)
+        # (len(lines), K) for both probs and indice(index of the arguments)
+        
 
         for i in range(len(lines)):
             sys.stdout.write('%s\t%s\n' % (
