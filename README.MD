@@ -36,6 +36,6 @@
 
 | date           | contents                                                     |      |
 | -------------- | ------------------------------------------------------------ | ---- |
-| 2021/11/27 Sat | Language Modeling, Smoothing and Discounting, Interpolation and Backoff, Perplexity |      |
+| 2021/11/27 Sat | Language Modeling(N-gram), Smoothing and Discounting, Interpolation and Backoff, Perplexity, RNN Language Modeling, Teacher Forcing |      |
 |                |                                                              |      |
 
