@@ -26,4 +26,8 @@
 | 2021/11/24 Wed | Word2Vec(Skip Gram), GloVe, FastText                         | [Code](https://github.com/saanghyuk/NLP/tree/main/NLP_basic/08-word_embedding) |
 | 2021/11/25 Thu | Text Classification with RNN                                 | [Code](https://github.com/saanghyuk/NLP/blob/main/NLP_basic/09-text_classification/simple_ntc/simple_ntc/models/rnn.py) |
 | 2021/11/26 Fri | Text Classification with CNN                                 | [Code](https://github.com/saanghyuk/NLP/blob/main/NLP_basic/09-text_classification/simple_ntc/simple_ntc/models/cnn.py) |
+| 2021/11/27 Sat |                                                              |                                                              |
+|                |                                                              |                                                              |
+|                |                                                              |                                                              |
+|                |                                                              |                                                              |
 
