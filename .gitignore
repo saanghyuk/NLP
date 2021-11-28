@@ -6,3 +6,7 @@
 /NLP_basic/08-word_embedding/fastText/
 /NLP_basic/09-text_classification/FastText_classification/data/
 *.zip
+*.xlsx
+*.txt
+/NLG/AiHub/
+/NLG/4-nlg/nlp_preprocessing/data/

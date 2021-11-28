@@ -37,5 +37,5 @@
 | date           | contents                                                     |      |
 | -------------- | ------------------------------------------------------------ | ---- |
 | 2021/11/27 Sat | Language Modeling(N-gram), Smoothing and Discounting, Interpolation and Backoff, Perplexity, RNN Language Modeling, Teacher Forcing |      |
-|                |                                                              |      |
+| 2021/11/28 Sun | Data Preparation([AI Hub](https://aihub.or.kr/))             |      |
 
