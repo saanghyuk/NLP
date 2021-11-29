@@ -34,8 +34,9 @@
 
 #### 3. Natural Language Generation
 
-| date           | contents                                                     |      |
-| -------------- | ------------------------------------------------------------ | ---- |
-| 2021/11/27 Sat | Language Modeling(N-gram), Smoothing and Discounting, Interpolation and Backoff, Perplexity, RNN Language Modeling, Teacher Forcing |      |
-| 2021/11/28 Sun | Data Preparation([AI Hub](https://aihub.or.kr/))             |      |
+| date           | contents                                                     |                                                              |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 2021/11/27 Sat | Language Modeling(N-gram), Smoothing and Discounting, Interpolation and Backoff, Perplexity, RNN Language Modeling, Teacher Forcing |                                                              |
+| 2021/11/28 Sun | Data Preparation([AI Hub](https://aihub.or.kr/))             | [Code](https://github.com/saanghyuk/NLP/tree/main/NLG/4-nlg/nlp_preprocessing) |
+| 2021/11/29 Mon | Sequence to Sequence, [Attention](https://arxiv.org/abs/1706.03762), Masking, Input Feeding |                                                              |
 
