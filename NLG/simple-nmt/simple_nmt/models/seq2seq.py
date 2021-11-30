@@ -23,7 +23,7 @@ class Attention(nn.Module):
         query = self.linear(h_t_tgt)
         # |query| = (batch_size, 1, hidden_size)
         # same shape result because linear transformation with (hs, hs) matrix
-        
+
         # transpose : (batch_size, length, hidden_size) => (batch_size, hidden_size, length)
         weight = torch.bmm(query, h_src.transpose(1, 2))
         # |weight| = (batch_size, 1, length)
@@ -72,7 +72,7 @@ class Encoder(nn.Module):
             # As you can see,
             # PackedSequence object has information about mini-batch-wise information,
             # not time-step-wise information.
-            # 
+            #
             # a = [torch.tensor([1,2,3]), torch.tensor([3,4])]
             # b = torch.nn.utils.rnn.pad_sequence(a, batch_first=True)
             # >>>>
@@ -82,7 +82,7 @@ class Encoder(nn.Module):
             # >>>>PackedSequence(data=tensor([ 1,  3,  2,  4,  3]), batch_sizes=tensor([ 2,  2,  1]))
         else:
             x = emb
-        
+
         # h is the hidden state of the last state: tuple of the hidden state and cell state
         # y is entire the last layer hidden state of all time stamps
         y, h = self.rnn(x)
@@ -90,7 +90,7 @@ class Encoder(nn.Module):
         # |h[0]| = (num_layers * 2, batch_size, hidden_size / 2)
 
         if isinstance(emb, tuple):
-            # if we packed x, y is still packed. then become size of 
+            # if we packed x, y is still packed. then become size of
             # |y| = (batch_size, length, hidden_size) : hidden_size/2*2
             y, _ = unpack(y, batch_first=True)
 
@@ -100,7 +100,7 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
 
     def __init__(self, word_vec_size, hidden_size, n_layers=4, dropout_p=.2):
-        super(Decoder, self).__init__() 
+        super(Decoder, self).__init__()
 
         # Be aware of value of 'batch_first' parameter and 'bidirectional' parameter.
         self.rnn = nn.LSTM(
@@ -114,7 +114,7 @@ class Decoder(nn.Module):
         # in the h_t_1 parameter, it would be contain tuple (hidden state, cell state)
     def forward(self, emb_t, h_t_1_tilde, h_t_1):
         # |emb_t| = (batch_size, 1, word_vec_size)
-        # |h_t_1_tilde| = (batch_size, 1, hidden_size)  
+        # |h_t_1_tilde| = (batch_size, 1, hidden_size)
         # |h_t_1[0]| = (n_layers, batch_size, hidden_size)
         batch_size = emb_t.size(0)
         hidden_size = h_t_1[0].size(-1)
@@ -140,7 +140,7 @@ class Generator(nn.Module):
 
     def __init__(self, hidden_size, output_size):
         super(Generator, self).__init__()
-        
+
         # output size : voca size of target language
         self.output = nn.Linear(hidden_size, output_size)
         self.softmax = nn.LogSoftmax(dim=-1)
@@ -153,7 +153,7 @@ class Generator(nn.Module):
 
         # Return log-probability instead of just probability.
         return y
-        # in training stage, we use teacher-forcing. 
+        # in training stage, we use teacher-forcing.
         # therefore, we can use generator just once with all results from previous stages
 
 
@@ -161,9 +161,11 @@ class Seq2Seq(nn.Module):
 
     def __init__(
         self,
+        # |V_src|
         input_size,
         word_vec_size,
         hidden_size,
+        #|V_target|
         output_size,
         n_layers=4,
         dropout_p=.2
@@ -195,18 +197,20 @@ class Seq2Seq(nn.Module):
         self.generator = Generator(hidden_size, output_size)
 
     def generate_mask(self, x, length):
+        # |src| = (bs, n) => (bs, n, |V_src|)
+        # length = (bs, ), just lengths of each samples
         mask = []
 
         max_length = max(length)
         for l in length:
             if max_length - l > 0:
-                # If the length is shorter than maximum length among samples, 
+                # If the length is shorter than maximum length among samples,
                 # set last few values to be 1s to remove attention weight.
                 mask += [torch.cat([x.new_ones(1, l).zero_(),
                                     x.new_ones(1, (max_length - l))
                                     ], dim=-1)]
             else:
-                # If the length of the sample equals to maximum length among samples, 
+                # If the length of the sample equals to maximum length among samples,
                 # set every value in mask to be 0.
                 mask += [x.new_ones(1, l).zero_()]
 
@@ -218,19 +222,25 @@ class Seq2Seq(nn.Module):
         new_hiddens = []
         new_cells = []
 
+        # |hiddens| = (#layers*2, bs, hs/2)
+        # |cells| = (#layers*2, bs, hs/2)
         hiddens, cells = encoder_hiddens
 
         # i-th and (i+1)-th layer is opposite direction.
         # Also, each direction of layer is half hidden size.
         # Therefore, we concatenate both directions to 1 hidden size layer.
         for i in range(0, hiddens.size(0), 2):
+            # (bs, hs)
             new_hiddens += [torch.cat([hiddens[i], hiddens[i + 1]], dim=-1)]
+            # (bs, hs)
             new_cells += [torch.cat([cells[i], cells[i + 1]], dim=-1)]
 
+        # After stack, (# of layers, bs, hs) * 2
         new_hiddens, new_cells = torch.stack(new_hiddens), torch.stack(new_cells)
 
         return (new_hiddens, new_cells)
 
+    # make merge_encoder_hiddens as parallel
     def fast_merge_encoder_hiddens(self, encoder_hiddens):
         # Merge bidirectional to uni-directional
         # We need to convert size from (n_layers * 2, batch_size, hidden_size / 2)
@@ -239,6 +249,11 @@ class Seq2Seq(nn.Module):
         h_0_tgt, c_0_tgt = encoder_hiddens
         batch_size = h_0_tgt.size(1)
 
+        # before conversion : |h_0_tgt| = (# layers*2, bs, hs/2)
+        # transpose : |h_0_tgt | = (bs, # layers*2, hs/2)
+        # contiguous -> just memory allignment
+        # view -> (bs, -1, hs) -> (bs, # layers, hs)
+        # transpose -> (# layers, bs, hs)
         h_0_tgt = h_0_tgt.transpose(0, 1).contiguous().view(batch_size,
                                                             -1,
                                                             self.hidden_size
@@ -256,6 +271,10 @@ class Seq2Seq(nn.Module):
         return h_0_tgt, c_0_tgt
 
     def forward(self, src, tgt):
+        # |src| = (bs, n) = (bs, n, |V_src|)
+        # |tgt| = (bs, m) = (bs, m, |V_tgt|)
+
+        # output size = (bs, m, |V_tgt|)
         batch_size = tgt.size(0)
 
         mask = None
@@ -273,22 +292,29 @@ class Seq2Seq(nn.Module):
             tgt = tgt[0]
 
         # Get word embedding vectors for every time-step of input sentence.
+
         emb_src = self.emb_src(x)
         # |emb_src| = (batch_size, length, word_vec_size)
 
         # The last hidden state of the encoder would be a initial hidden state of decoder.
+        # forward
         h_src, h_0_tgt = self.encoder((emb_src, x_length))
         # |h_src| = (batch_size, length, hidden_size)
         # |h_0_tgt| = (n_layers * 2, batch_size, hidden_size / 2)
-
+        
+        # |h_0_tgt| = (n_layers, batch_size, hidden_size ) * 2
         h_0_tgt = self.fast_merge_encoder_hiddens(h_0_tgt)
+
+        # because of teacher forcing, we can make every answers to embedded
         emb_tgt = self.emb_dec(tgt)
         # |emb_tgt| = (batch_size, length, word_vec_size)
         h_tilde = []
 
+        # this is input_feeding from the last layer
         h_t_tilde = None
         decoder_hidden = h_0_tgt
         # Run decoder until the end of the time-step.
+        # |tgt| = (bs, m) = (bs, m, |V_tgt|)
         for t in range(tgt.size(1)):
             # Teacher Forcing: take each input from training set,
             # not from the last time-step's output.
@@ -296,27 +322,32 @@ class Seq2Seq(nn.Module):
             # training procedure and inference procedure becomes different.
             # Of course, because of sequential running in decoder,
             # this causes severe bottle-neck.
+            # |emb_tgt| = (batch_size, length, word_vec_size)
             emb_t = emb_tgt[:, t, :].unsqueeze(1)
+            # if not unsqueeze, (bs, ws) -> with |unsqueece| = (bs, 1, ws)
             # |emb_t| = (batch_size, 1, word_vec_size)
-            # |h_t_tilde| = (batch_size, 1, hidden_size)
 
+            # this is for input feeding
+            # |h_t_tilde| = (batch_size, 1, hidden_size)
             decoder_output, decoder_hidden = self.decoder(emb_t,
                                                           h_t_tilde,
                                                           decoder_hidden
                                                           )
             # |decoder_output| = (batch_size, 1, hidden_size)
-            # |decoder_hidden| = (n_layers, batch_size, hidden_size)
-
+            # |decoder_hidden| = (n_layers, batch_size, hidden_size) * 2
+            # |h_src| = (batch_size, length, hidden_size)
+            # |mask| = (bs, length)
             context_vector = self.attn(h_src, decoder_output, mask)
             # |context_vector| = (batch_size, 1, hidden_size)
 
+            # |torch.cat[(bs, 1, hs), (bs, 1, hs)]| = (bs, 1, 2*hs(
             h_t_tilde = self.tanh(self.concat(torch.cat([decoder_output,
                                                          context_vector
                                                          ], dim=-1)))
             # |h_t_tilde| = (batch_size, 1, hidden_size)
 
             h_tilde += [h_t_tilde]
-
+            # h_tilde = [(bs, 1, hs), (bs, 1, hs), (bs, 1, hs)]
         h_tilde = torch.cat(h_tilde, dim=1)
         # |h_tilde| = (batch_size, length, hidden_size)
 
@@ -344,7 +375,7 @@ class Seq2Seq(nn.Module):
 
         is_decoding = x.new_ones(batch_size, 1).bool()
         h_t_tilde, y_hats, indice = None, [], []
-        
+
         # Repeat a loop while sum of 'is_decoding' flag is bigger than 0,
         # or current time-step is smaller than maximum length.
         while is_decoding.sum() > 0 and len(indice) < max_length:
@@ -433,18 +464,18 @@ class Seq2Seq(nn.Module):
         is_done = [board.is_done() for board in boards]
 
         length = 0
-        # Run loop while sum of 'is_done' is smaller than batch_size, 
+        # Run loop while sum of 'is_done' is smaller than batch_size,
         # or length is still smaller than max_length.
         while sum(is_done) < batch_size and length <= max_length:
             # current_batch_size = sum(is_done) * beam_size
 
             # Initialize fabricated variables.
-            # As far as batch-beam-search is running, 
-            # temporary batch-size for fabricated mini-batch is 
+            # As far as batch-beam-search is running,
+            # temporary batch-size for fabricated mini-batch is
             # 'beam_size'-times bigger than original batch_size.
             fab_input, fab_hidden, fab_cell, fab_h_t_tilde = [], [], [], []
             fab_h_src, fab_mask = [], []
-            
+
             # Build fabricated mini-batch in non-parallel way.
             # This may cause a bottle-neck.
             for i, board in enumerate(boards):

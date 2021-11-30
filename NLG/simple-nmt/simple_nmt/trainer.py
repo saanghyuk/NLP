@@ -31,6 +31,8 @@ class MaximumLikelihoodEstimationEngine(Engine):
         super().__init__(func)
 
         self.best_loss = np.inf
+        
+        # This is for AMP
         self.scaler = GradScaler()
 
     @staticmethod
@@ -39,19 +41,26 @@ class MaximumLikelihoodEstimationEngine(Engine):
         # You have to reset the gradients of all model parameters
         # before to take another step in gradient descent.
         engine.model.train()
-        if engine.state.iteration % engine.config.iteration_per_update == 1 or \
-            engine.config.iteration_per_update == 1:
+        # Gradient Accumulation
+        if engine.state.iteration % engine.config.iteration_per_update == 1 or engine.config.iteration_per_update == 1:
             if engine.state.iteration > 1:
                 engine.optimizer.zero_grad()
-
+ 
         device = next(engine.model.parameters()).device
+        # mini_batch.src[0].to(device) : Tensor with <pad>
+        # mini_batch.src[1] : Length of each sentence
         mini_batch.src = (mini_batch.src[0].to(device), mini_batch.src[1])
         mini_batch.tgt = (mini_batch.tgt[0].to(device), mini_batch.tgt[1])
 
+       
         # Raw target variable has both BOS and EOS token. 
         # The output of sequence-to-sequence does not have BOS token. 
         # Thus, remove BOS token for reference.
         x, y = mini_batch.src, mini_batch.tgt[0][:, 1:]
+        # mini_batch.tgt[0].to(device) : {BOS, Y1, Y2, <EOS>}
+        # However, input of decoder, we must not use <EOS>. 
+        # So, we have to slice {BOS, Y1, Y2} only this, without <EOS> token
+        
         # |x| = (batch_size, length)
         # |y| = (batch_size, length)
 
@@ -59,20 +68,27 @@ class MaximumLikelihoodEstimationEngine(Engine):
             # Take feed-forward
             # Similar as before, the input of decoder does not have EOS token.
             # Thus, remove EOS token for decoder input.
+            # we have to get rid of <EOS> while teacher forcing
             y_hat = engine.model(x, mini_batch.tgt[0][:, :-1])
             # |y_hat| = (batch_size, length, output_size)
 
             loss = engine.crit(
+                # same with output size
+                # | y_hat | = (batch_size*length, output size)
                 y_hat.contiguous().view(-1, y_hat.size(-1)),
+                # | y | = (batch_size*length)
                 y.contiguous().view(-1)
             )
+            # refer to the loss function defined in the another python file
             backward_target = loss.div(y.size(0)).div(engine.config.iteration_per_update)
 
         if engine.config.gpu_id >= 0 and not engine.config.off_autocast:
             engine.scaler.scale(backward_target).backward()
         else:
+            # because AMP only working in gpu 
             backward_target.backward()
 
+        # total number of words in target sentence of this mini-batch
         word_count = int(mini_batch.tgt[1].sum())
         p_norm = float(get_parameter_norm(engine.model.parameters()))
         g_norm = float(get_grad_norm(engine.model.parameters()))
@@ -91,8 +107,10 @@ class MaximumLikelihoodEstimationEngine(Engine):
                 engine.scaler.update()
             else:
                 engine.optimizer.step()
-
+                
+        # we can calculate loss per word
         loss = float(loss / word_count)
+        # perplexity
         ppl = np.exp(loss)
 
         return {
