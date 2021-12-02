@@ -40,4 +40,5 @@
 | 2021/11/28 Sun | Data Preparation([AI Hub 'Kor-Eng Paired Data' for building machine translator](https://aihub.or.kr/aidata/87/download)) | [Code](https://github.com/saanghyuk/NLP/tree/main/NLG/4-nlg/nlp_preprocessing) |
 | 2021/11/29 Mon | Sequence to Sequence, Attention, Masking, Input Feeding, [Pack Sequence](https://stackoverflow.com/questions/51030782/why-do-we-pack-the-sequences-in-pytorch), Gradient Accumulation | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/Packed_Sequence.ipynb),  [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/seq2seq.py) |
 | 2021/11/30 Tue | [AMP](https://pytorch.org/docs/stable/amp.html), Seq2Seq Implementation |                                                              |
+| 2021/12/1      | Seq2Seq Implementation                                       |                                                              |
 
