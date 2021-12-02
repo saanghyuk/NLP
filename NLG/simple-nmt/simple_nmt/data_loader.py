@@ -38,7 +38,7 @@ class DataLoader():
             init_token='<BOS>' if dsl else None,
             eos_token='<EOS>' if dsl else None,
         )
-
+        # <BOS> and <EOS> are only necessary in the target
         self.tgt = data.Field(
             sequential=True,
             use_vocab=True,
@@ -52,6 +52,7 @@ class DataLoader():
         if train_fn is not None and valid_fn is not None and exts is not None:
             train = TranslationDataset(
                 path=train_fn,
+                # en, ko
                 exts=exts,
                 fields=[('src', self.src), ('tgt', self.tgt)],
                 max_length=max_length
@@ -69,6 +70,7 @@ class DataLoader():
                 device='cuda:%d' % device if device >= 0 else 'cpu',
                 shuffle=shuffle,
                 sort_key=lambda x: len(x.tgt) + (max_length * len(x.src)),
+                # we need to sort within batch because of packed sequence
                 sort_within_batch=True,
             )
             self.valid_iter = data.BucketIterator(
@@ -88,6 +90,7 @@ class DataLoader():
         self.tgt.vocab = tgt_vocab
 
 
+        # this is overriding of torchtext Translation Dataset
 class TranslationDataset(data.Dataset):
     """Defines a dataset for machine translation."""
 

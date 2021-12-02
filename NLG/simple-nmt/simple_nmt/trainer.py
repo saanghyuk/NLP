@@ -38,6 +38,8 @@ class MaximumLikelihoodEstimationEngine(Engine):
     @staticmethod
     # @profile
     def train(engine, mini_batch):
+        # when we train, we will put data loader as mini_batch argument
+        
         # You have to reset the gradients of all model parameters
         # before to take another step in gradient descent.
         engine.model.train()
@@ -70,7 +72,8 @@ class MaximumLikelihoodEstimationEngine(Engine):
             # we have to get rid of <EOS> while teacher forcing
             y_hat = engine.model(x, mini_batch.tgt[0][:, :-1])
             # |y_hat| = (batch_size, length, output_size)
-
+            
+            # for screen
             loss = engine.crit(
                 # same with output size
                 # | y_hat | = (batch_size*length, output size)
@@ -83,6 +86,7 @@ class MaximumLikelihoodEstimationEngine(Engine):
                 engine.config.iteration_per_update)
 
         if engine.config.gpu_id >= 0 and not engine.config.off_autocast:
+            # back propagation
             engine.scaler.scale(backward_target).backward()
         else:
             # because AMP only working in gpu

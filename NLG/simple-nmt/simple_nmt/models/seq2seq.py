@@ -88,6 +88,7 @@ class Encoder(nn.Module):
         y, h = self.rnn(x)
         # |y| = (batch_size, length, hidden_size) : hidden_size/2*2
         # |h[0]| = (num_layers * 2, batch_size, hidden_size / 2)
+        # |h[1] - Cell State| = (num_layers * 2, batch_size, hidden_size / 2)
 
         if isinstance(emb, tuple):
             # if we packed x, y is still packed. then become size of

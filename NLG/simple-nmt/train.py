@@ -242,6 +242,7 @@ def get_model(input_size, output_size, config):
 def get_crit(output_size, pad_index):
     # Default weight for loss equals to 1, but we don't need to get loss for PAD token.
     # Thus, set a weight for PAD to zero.
+    # Y will have <pad>, we don't want to give score to predict pad
     loss_weight = torch.ones(output_size)
     loss_weight[pad_index] = 0.
     # Instead of using Cross-Entropy loss,
@@ -263,12 +264,15 @@ def get_optimizer(model, config):
     elif config.use_radam:
         optimizer = custom_optim.RAdam(model.parameters(), lr=config.lr)
     else:
+        # lr = 1, we can use big lr because we already define the gradient clipping
         optimizer = optim.SGD(model.parameters(), lr=config.lr)
 
     return optimizer
 
 
 def get_scheduler(optimizer, config):
+    # ~ 10 epochs : 1
+    # from 10 become half for each epoch
     if config.lr_step > 0:
         lr_scheduler = optim.lr_scheduler.MultiStepLR(
             optimizer,
@@ -295,7 +299,7 @@ def main(config, model_weight=None, opt_weight=None):
     loader = DataLoader(
         config.train,                           # Train file name except extention, which is language.
         config.valid,                           # Validation file name except extension.
-        (config.lang[:2], config.lang[-2:]),    # Source and target language.
+        (config.lang[:2], config.lang[-2:]),    # Source and target language. --lang enko
         batch_size=config.batch_size,
         device=-1,                              # Lazy loading
         max_length=config.max_length,           # Loger sequence will be excluded.
