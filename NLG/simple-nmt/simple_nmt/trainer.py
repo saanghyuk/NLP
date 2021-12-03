@@ -39,7 +39,7 @@ class MaximumLikelihoodEstimationEngine(Engine):
     # @profile
     def train(engine, mini_batch):
         # when we train, we will put data loader as mini_batch argument
-        
+
         # You have to reset the gradients of all model parameters
         # before to take another step in gradient descent.
         engine.model.train()
@@ -72,7 +72,7 @@ class MaximumLikelihoodEstimationEngine(Engine):
             # we have to get rid of <EOS> while teacher forcing
             y_hat = engine.model(x, mini_batch.tgt[0][:, :-1])
             # |y_hat| = (batch_size, length, output_size)
-            
+
             # for screen
             loss = engine.crit(
                 # same with output size

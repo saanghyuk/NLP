@@ -356,7 +356,8 @@ class Seq2Seq(nn.Module):
         # |y_hat| = (batch_size, length, output_size)
 
         return y_hat
-
+    # if training is not enough, in many cases, the sentences do not end. 
+    # to prevent, we define max_length
     def search(self, src, is_greedy=True, max_length=255):
         if isinstance(src, tuple):
             x, x_length = src
@@ -372,14 +373,18 @@ class Seq2Seq(nn.Module):
         decoder_hidden = self.fast_merge_encoder_hiddens(h_0_tgt)
 
         # Fill a vector, which has 'batch_size' dimension, with BOS value.
+        # data_loader.BOS means "bos token of data_loader place"
         y = x.new(batch_size, 1).zero_() + data_loader.BOS
 
+        # flag to use to check whether the training of each is ended
         is_decoding = x.new_ones(batch_size, 1).bool()
+        # h_t_tilde : (bs, 1, hs) of previous time step
+        # y_hats : prediction
         h_t_tilde, y_hats, indice = None, [], []
 
         # Repeat a loop while sum of 'is_decoding' flag is bigger than 0,
         # or current time-step is smaller than maximum length.
-        while is_decoding.sum() > 0 and len(indice) < max_length:
+        while is_decoding.sum() > 0 and len(indice) < max_length: # this means don't make too much length
             # Unlike training procedure,
             # take the last time-step's output during the inference.
             emb_t = self.emb_dec(y)
@@ -405,8 +410,12 @@ class Seq2Seq(nn.Module):
                 # |y| = (batch_size, 1)
 
             # Put PAD if the sample is done.
+            # if is_decoding is false, fill with PAD
+            # in the batch, there would be some sentence which already get EOS from previous step
+            # in those cases, we put PAD
             y = y.masked_fill_(~is_decoding, data_loader.PAD)
             # Update is_decoding if there is EOS token.
+            # If we get EOS in this step, 1*0 = 0. Because False. 
             is_decoding = is_decoding * torch.ne(y, data_loader.EOS)
             # |is_decoding| = (batch_size, 1)
             indice += [y]

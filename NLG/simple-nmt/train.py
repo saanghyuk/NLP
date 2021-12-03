@@ -219,9 +219,11 @@ def get_model(input_size, output_size, config):
     if config.use_transformer:
         model = Transformer(
             input_size,                     # Source vocabulary size
-            config.hidden_size,             # Transformer doesn't need word_vec_size.
+            # Transformer doesn't need word_vec_size.
+            config.hidden_size,
             output_size,                    # Target vocabulary size
-            n_splits=config.n_splits,       # Number of head in Multi-head Attention.
+            # Number of head in Multi-head Attention.
+            n_splits=config.n_splits,
             n_enc_blocks=config.n_layers,   # Number of encoder blocks
             n_dec_blocks=config.n_layers,   # Number of decoder blocks
             dropout_p=config.dropout,       # Dropout rate on each block
@@ -258,8 +260,9 @@ def get_crit(output_size, pad_index):
 def get_optimizer(model, config):
     if config.use_adam:
         if config.use_transformer:
-            optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=(.9, .98))
-        else: # case of rnn based seq2seq.
+            optimizer = optim.Adam(
+                model.parameters(), lr=config.lr, betas=(.9, .98))
+        else:  # case of rnn based seq2seq.
             optimizer = optim.Adam(model.parameters(), lr=config.lr)
     elif config.use_radam:
         optimizer = custom_optim.RAdam(model.parameters(), lr=config.lr)
@@ -297,13 +300,18 @@ def main(config, model_weight=None, opt_weight=None):
     print_config(config)
 
     loader = DataLoader(
-        config.train,                           # Train file name except extention, which is language.
-        config.valid,                           # Validation file name except extension.
-        (config.lang[:2], config.lang[-2:]),    # Source and target language. --lang enko
+        # Train file name except extention, which is language.
+        config.train,
+        # Validation file name except extension.
+        config.valid,
+        # Source and target language. --lang enko
+        (config.lang[:2], config.lang[-2:]),
         batch_size=config.batch_size,
         device=-1,                              # Lazy loading
-        max_length=config.max_length,           # Loger sequence will be excluded.
-        dsl=False,                              # Turn-off Dual-supervised Learning mode.
+        # Loger sequence will be excluded.
+        max_length=config.max_length,
+        # Turn-off Dual-supervised Learning mode.
+        dsl=False,
     )
 
     input_size, output_size = len(loader.src.vocab), len(loader.tgt.vocab)
@@ -350,7 +358,7 @@ def main(config, model_weight=None, opt_weight=None):
 
         mrt_trainer.train(
             model,
-            None, # We don't need criterion for MRT.
+            None,  # We don't need criterion for MRT.
             optimizer,
             train_loader=loader.train_iter,
             valid_loader=loader.valid_iter,
