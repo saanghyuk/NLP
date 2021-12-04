@@ -17,7 +17,7 @@ class SingleBeamSearchBoard():
         prev_status_config,
         beam_size=5,
         max_length=255,
-    ):
+    ) :
         self.beam_size = beam_size
         self.max_length = max_length
 
@@ -25,11 +25,12 @@ class SingleBeamSearchBoard():
         self.device = device
         # Inferred word index for each time-step. For now, initialized with initial time-step.
         self.word_indice = [torch.LongTensor(beam_size).zero_().to(self.device) + data_loader.BOS]
-        # Beam index for selected word index, at each time-step.
+        # Beam index for selected word index, at each time-step. 
         self.beam_indice = [torch.LongTensor(beam_size).zero_().to(self.device) - 1]
         # Cumulative log-probability for each beam.
         self.cumulative_probs = [torch.FloatTensor([.0] + [-float('inf')] * (beam_size - 1)).to(self.device)]
         # 1 if it is done else 0
+        # to check if each beam is finished
         self.masks = [torch.BoolTensor(beam_size).zero_().to(self.device)]
 
         # We don't need to remember every time-step of hidden states:
@@ -44,6 +45,9 @@ class SingleBeamSearchBoard():
             if init_status is not None:
                 self.prev_status[prev_status_name] = torch.cat([init_status] * beam_size,
                                                                dim=batch_dim_index)
+                # |prev_status_name[hidden state]| = (n_layers, beam_size, hs)
+                # |prev_status_name[cell state]| = (n_layers, beam_size, hs)
+                # |prev_status_name[h tilde]| = (beam_size, 1, hs)
             else:
                 self.prev_status[prev_status_name] = None
             self.batch_dims[prev_status_name] = batch_dim_index
@@ -72,6 +76,7 @@ class SingleBeamSearchBoard():
         return 0
 
     def get_batch(self):
+        # previous output of Y_hat
         y_hat = self.word_indice[-1].unsqueeze(-1)
         # |y_hat| = (beam_size, 1)
         # if model != transformer:
@@ -101,6 +106,7 @@ class SingleBeamSearchBoard():
         # Second, expand -inf filled cumulative probability to fit to 'y_hat'.
         # (beam_size) --> (beam_size, 1, 1) --> (beam_size, 1, output_size)
         # Third, add expanded cumulative probability to 'y_hat'
+        # mask : 1 if it is done, else 0
         cumulative_prob = self.cumulative_probs[-1].masked_fill_(self.masks[-1], -float('inf'))
         cumulative_prob = y_hat + cumulative_prob.view(-1, 1, 1).expand(self.beam_size, 1, output_size)
         # |cumulative_prob| = (beam_size, 1, output_size)
@@ -122,14 +128,18 @@ class SingleBeamSearchBoard():
 
         # |top_log_prob| = (beam_size,)
         # |top_indice| = (beam_size,)
-
+        
+        # we have to know which beam these index from
         # Because we picked from whole batch, original word index should be calculated again.
+        # index / output size -> remains
         self.word_indice += [top_indice.fmod(output_size)]
         # Also, we can get an index of beam, which has top-k log-probability search result.
+        # self.long() is equivalent to self.to(torch.int64)
         self.beam_indice += [top_indice.div(float(output_size)).long()]
 
         # Add results to history boards.
         self.cumulative_probs += [top_log_prob]
+        # if finished, make mask to 1
         self.masks += [torch.eq(self.word_indice[-1], data_loader.EOS)] # Set finish mask if we got EOS.
         # Calculate a number of finished beams.
         self.done_cnt += self.masks[-1].float().sum()
@@ -143,11 +153,14 @@ class SingleBeamSearchBoard():
         # Unlike seq2seq, transformer has to memorize every previous output for attention operation.
         for prev_status_name, prev_status in prev_status.items():
             self.prev_status[prev_status_name] = torch.index_select(
-                prev_status,
-                dim=self.batch_dims[prev_status_name],
-                index=self.beam_indice[-1]
+                prev_status, # |prev_status| = ()
+                dim=self.batch_dims[prev_status_name], # 1
+                index=self.beam_indice[-1] # if beam_indice[-1] = [2, 2, 1]
             ).contiguous()
-
+            # self.prev_status[prev_status_name] = torch.cat([prev_status[:, 2, :], 
+                                        #prev_status[:, 2, :], prev_status[:, 1, :]], dim=1)
+            # prepare for next mini-batch
+            
     def get_n_best(self, n=1, length_penalty=.2):
         sentences, probs, founds = [], [], []
 
@@ -165,6 +178,7 @@ class SingleBeamSearchBoard():
                     probs += [self.cumulative_probs[-1][b] * self.get_length_penalty(len(self.cumulative_probs),
                                                                                      alpha=length_penalty)]
                     founds += [(t, b)]
+       
 
         # Sort and take n-best.
         sorted_founds_with_probs = sorted(

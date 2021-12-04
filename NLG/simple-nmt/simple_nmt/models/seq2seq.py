@@ -433,6 +433,7 @@ class Seq2Seq(nn.Module):
         src,
         beam_size=5,
         max_length=255,
+        # we can find best n up to beam_size
         n_best=1,
         length_penalty=.2
     ):
@@ -445,18 +446,22 @@ class Seq2Seq(nn.Module):
         else:
             x = src
         batch_size = x.size(0)
-
+        
         emb_src = self.emb_src(x)
+        # |emb_src| = (batch_size, length, ws)
         h_src, h_0_tgt = self.encoder((emb_src, x_length))
         # |h_src| = (batch_size, length, hidden_size)
+        # |h_0_tgt| = (# layers*2, batch_size, hidden_size/2) * 2
         h_0_tgt = self.fast_merge_encoder_hiddens(h_0_tgt)
+        # |h_0_tgt| = (# layers, batch_size, hidden_size) * 2
 
-        # initialize 'SingleBeamSearchBoard' as many as batch_size
+        # initialize 'SingleBeamSearchBoard' as many as 'batch_size' 
         boards = [SingleBeamSearchBoard(
             h_src.device,
             {
                 'hidden_state': {
                     'init_status': h_0_tgt[0][:, i, :].unsqueeze(1),
+                    # batch_dim_index means - where is the dimension of batch. Same with position of i
                     'batch_dim_index': 1,
                 }, # |hidden_state| = (n_layers, batch_size, hidden_size)
                 'cell_state': {
@@ -499,6 +504,7 @@ class Seq2Seq(nn.Module):
                     fab_input  += [y_hat_i]
                     fab_hidden += [hidden_i]
                     fab_cell   += [cell_i]
+                    # just expand
                     fab_h_src  += [h_src[i, :, :]] * beam_size
                     fab_mask   += [mask[i, :]] * beam_size
                     if h_t_tilde_i is not None:
@@ -514,6 +520,7 @@ class Seq2Seq(nn.Module):
             fab_mask   = torch.stack(fab_mask)
             if fab_h_t_tilde is not None:
                 fab_h_t_tilde = torch.cat(fab_h_t_tilde, dim=0)
+            # current batch size means fabricated batch size after expansion 
             # |fab_input|     = (current_batch_size, 1)
             # |fab_hidden|    = (n_layers, current_batch_size, hidden_size)
             # |fab_cell|      = (n_layers, current_batch_size, hidden_size)
