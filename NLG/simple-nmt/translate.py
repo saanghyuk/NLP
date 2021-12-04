@@ -205,9 +205,11 @@ if __name__ == '__main__':
             # Since packed_sequence must be sorted by decreasing order of length,
             # sorting by length in mini-batch should be restored by original order.
             # Therefore, we need to memorize the original index of the sentence.
-            lengths         = [len(line) for line in lines]
+            lengths = [len(line) for line in lines]
+            # original index
             original_indice = [i for i in range(len(lines))]
-
+                
+            # lines = [['', '', ''], ['', '', '']]
             sorted_tuples = sorted(
                 zip(lines, lengths, original_indice),
                 key=itemgetter(1),
@@ -219,7 +221,7 @@ if __name__ == '__main__':
 
             # Converts string to list of index.
             x = loader.src.numericalize(
-                loader.src.pad(sorted_lines),
+                loader.src.pad(sorted_lines), # <- add <pad>
                 device='cuda:%d' % config.gpu_id if config.gpu_id >= 0 else 'cpu'
             )
             # |x| = (batch_size, length)
@@ -230,6 +232,7 @@ if __name__ == '__main__':
                 # |indice| = (batch_size, length)
 
                 output = to_text(indice, loader.tgt.vocab)
+                # convert to original index
                 sorted_tuples = sorted(zip(output, original_indice), key=itemgetter(1))
                 output = [sorted_tuples[i][0] for i in range(len(sorted_tuples))]
 

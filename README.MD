@@ -42,5 +42,7 @@
 | 2021/11/30 Tue | [AMP](https://pytorch.org/docs/stable/amp.html), Seq2Seq Implementation | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/seq2seq.py) |
 | 2021/12/1 Wed  | Seq2Seq Implementation                                       | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/seq2seq.py) |
 | 2021/12/2 Thu  | Trainer.py, Train.py, Data Loader, continue_train.py         | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/seq2seq.py), [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/trainer.py) |
-| 2021/12/3 Fri  | Inference, Greedy Search, Penalty                            |                                                              |
+| 2021/12/3 Fri  | Inference, Greedy Search, Penalty, Search Function, Translate.py |                                                              |
+| 2021/12/4 Sat  | Evaluations(BLEU), Beam Search                               |                                                              |
+|                |                                                              |                                                              |
 
