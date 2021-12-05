@@ -113,6 +113,7 @@ class Decoder(nn.Module):
             batch_first=True,
         )
         # in the h_t_1 parameter, it would be contain tuple (hidden state, cell state)
+
     def forward(self, emb_t, h_t_1_tilde, h_t_1):
         # |emb_t| = (batch_size, 1, word_vec_size)
         # |h_t_1_tilde| = (batch_size, 1, hidden_size)
@@ -166,7 +167,7 @@ class Seq2Seq(nn.Module):
         input_size,
         word_vec_size,
         hidden_size,
-        #|V_target|
+        # |V_target|
         output_size,
         n_layers=4,
         dropout_p=.2
@@ -237,7 +238,8 @@ class Seq2Seq(nn.Module):
             new_cells += [torch.cat([cells[i], cells[i + 1]], dim=-1)]
 
         # After stack, (# of layers, bs, hs) * 2
-        new_hiddens, new_cells = torch.stack(new_hiddens), torch.stack(new_cells)
+        new_hiddens, new_cells = torch.stack(
+            new_hiddens), torch.stack(new_cells)
 
         return (new_hiddens, new_cells)
 
@@ -302,7 +304,7 @@ class Seq2Seq(nn.Module):
         h_src, h_0_tgt = self.encoder((emb_src, x_length))
         # |h_src| = (batch_size, length, hidden_size)
         # |h_0_tgt| = (n_layers * 2, batch_size, hidden_size / 2)
-        
+
         # |h_0_tgt| = (n_layers, batch_size, hidden_size ) * 2
         h_0_tgt = self.fast_merge_encoder_hiddens(h_0_tgt)
 
@@ -356,8 +358,9 @@ class Seq2Seq(nn.Module):
         # |y_hat| = (batch_size, length, output_size)
 
         return y_hat
-    # if training is not enough, in many cases, the sentences do not end. 
+    # if training is not enough, in many cases, the sentences do not end.
     # to prevent, we define max_length
+
     def search(self, src, is_greedy=True, max_length=255):
         if isinstance(src, tuple):
             x, x_length = src
@@ -384,7 +387,7 @@ class Seq2Seq(nn.Module):
 
         # Repeat a loop while sum of 'is_decoding' flag is bigger than 0,
         # or current time-step is smaller than maximum length.
-        while is_decoding.sum() > 0 and len(indice) < max_length: # this means don't make too much length
+        while is_decoding.sum() > 0 and len(indice) < max_length:  # this means don't make too much length
             # Unlike training procedure,
             # take the last time-step's output during the inference.
             emb_t = self.emb_dec(y)
@@ -415,7 +418,7 @@ class Seq2Seq(nn.Module):
             # in those cases, we put PAD
             y = y.masked_fill_(~is_decoding, data_loader.PAD)
             # Update is_decoding if there is EOS token.
-            # If we get EOS in this step, 1*0 = 0. Because False. 
+            # If we get EOS in this step, 1*0 = 0. Because False.
             is_decoding = is_decoding * torch.ne(y, data_loader.EOS)
             # |is_decoding| = (batch_size, 1)
             indice += [y]
@@ -427,7 +430,7 @@ class Seq2Seq(nn.Module):
 
         return y_hats, indice
 
-    #@profile
+    # @profile
     def batch_beam_search(
         self,
         src,
@@ -446,7 +449,7 @@ class Seq2Seq(nn.Module):
         else:
             x = src
         batch_size = x.size(0)
-        
+
         emb_src = self.emb_src(x)
         # |emb_src| = (batch_size, length, ws)
         h_src, h_0_tgt = self.encoder((emb_src, x_length))
@@ -455,7 +458,7 @@ class Seq2Seq(nn.Module):
         h_0_tgt = self.fast_merge_encoder_hiddens(h_0_tgt)
         # |h_0_tgt| = (# layers, batch_size, hidden_size) * 2
 
-        # initialize 'SingleBeamSearchBoard' as many as 'batch_size' 
+        # initialize 'SingleBeamSearchBoard' as many as 'batch_size'
         boards = [SingleBeamSearchBoard(
             h_src.device,
             {
@@ -463,15 +466,15 @@ class Seq2Seq(nn.Module):
                     'init_status': h_0_tgt[0][:, i, :].unsqueeze(1),
                     # batch_dim_index means - where is the dimension of batch. Same with position of i
                     'batch_dim_index': 1,
-                }, # |hidden_state| = (n_layers, batch_size, hidden_size)
+                },  # |hidden_state| = (n_layers, batch_size, hidden_size)
                 'cell_state': {
                     'init_status': h_0_tgt[1][:, i, :].unsqueeze(1),
                     'batch_dim_index': 1,
-                }, # |cell_state| = (n_layers, batch_size, hidden_size)
+                },  # |cell_state| = (n_layers, batch_size, hidden_size)
                 'h_t_1_tilde': {
                     'init_status': None,
                     'batch_dim_index': 0,
-                }, # |h_t_1_tilde| = (batch_size, 1, hidden_size)
+                },  # |h_t_1_tilde| = (batch_size, 1, hidden_size)
             },
             beam_size=beam_size,
             max_length=max_length,
@@ -489,7 +492,7 @@ class Seq2Seq(nn.Module):
             # temporary batch-size for fabricated mini-batch is
             # 'beam_size'-times bigger than original batch_size.
             fab_input, fab_hidden, fab_cell, fab_h_t_tilde = [], [], [], []
-            fab_h_src, fab_mask = [], []
+            fab_h_src, fab_mask = [], []  # these two lists are using on Attention
 
             # Build fabricated mini-batch in non-parallel way.
             # This may cause a bottle-neck.
@@ -497,30 +500,30 @@ class Seq2Seq(nn.Module):
                 # Batchify if the inference for the sample is still not finished.
                 if board.is_done() == 0:
                     y_hat_i, prev_status = board.get_batch()
-                    hidden_i    = prev_status['hidden_state']
-                    cell_i      = prev_status['cell_state']
+                    hidden_i = prev_status['hidden_state']
+                    cell_i = prev_status['cell_state']
                     h_t_tilde_i = prev_status['h_t_1_tilde']
 
-                    fab_input  += [y_hat_i]
+                    fab_input += [y_hat_i]
                     fab_hidden += [hidden_i]
-                    fab_cell   += [cell_i]
+                    fab_cell += [cell_i]
                     # just expand
-                    fab_h_src  += [h_src[i, :, :]] * beam_size
-                    fab_mask   += [mask[i, :]] * beam_size
+                    fab_h_src += [h_src[i, :, :]] * beam_size
+                    fab_mask += [mask[i, :]] * beam_size
                     if h_t_tilde_i is not None:
                         fab_h_t_tilde += [h_t_tilde_i]
                     else:
                         fab_h_t_tilde = None
 
             # Now, concatenate list of tensors.
-            fab_input  = torch.cat(fab_input,  dim=0)
+            fab_input = torch.cat(fab_input,  dim=0)
             fab_hidden = torch.cat(fab_hidden, dim=1)
-            fab_cell   = torch.cat(fab_cell,   dim=1)
-            fab_h_src  = torch.stack(fab_h_src)
-            fab_mask   = torch.stack(fab_mask)
+            fab_cell = torch.cat(fab_cell,   dim=1)
+            fab_h_src = torch.stack(fab_h_src)
+            fab_mask = torch.stack(fab_mask)
             if fab_h_t_tilde is not None:
                 fab_h_t_tilde = torch.cat(fab_h_t_tilde, dim=0)
-            # current batch size means fabricated batch size after expansion 
+            # current batch size means fabricated batch size after expansion
             # |fab_input|     = (current_batch_size, 1)
             # |fab_hidden|    = (n_layers, current_batch_size, hidden_size)
             # |fab_cell|      = (n_layers, current_batch_size, hidden_size)
@@ -560,8 +563,8 @@ class Seq2Seq(nn.Module):
                         y_hat[begin:end],
                         {
                             'hidden_state': fab_hidden[:, begin:end, :],
-                            'cell_state'  : fab_cell[:, begin:end, :],
-                            'h_t_1_tilde' : fab_h_t_tilde[begin:end],
+                            'cell_state': fab_cell[:, begin:end, :],
+                            'h_t_1_tilde': fab_h_t_tilde[begin:end],
                         },
                     )
                     cnt += 1
@@ -574,9 +577,10 @@ class Seq2Seq(nn.Module):
 
         # Collect the results.
         for i, board in enumerate(boards):
-            sentences, probs = board.get_n_best(n_best, length_penalty=length_penalty)
+            sentences, probs = board.get_n_best(
+                n_best, length_penalty=length_penalty)
 
             batch_sentences += [sentences]
-            batch_probs     += [probs]
+            batch_probs += [probs]
 
         return batch_sentences, batch_probs
