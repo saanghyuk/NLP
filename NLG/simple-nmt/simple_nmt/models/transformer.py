@@ -39,6 +39,7 @@ class MultiHead(nn.Module):
         self.n_splits = n_splits
 
         # Note that we don't have to declare each linear layer, separately.
+        # We will make this layer with parallel
         self.Q_linear = nn.Linear(hidden_size, hidden_size, bias=False)
         self.K_linear = nn.Linear(hidden_size, hidden_size, bias=False)
         self.V_linear = nn.Linear(hidden_size, hidden_size, bias=False)
@@ -55,6 +56,7 @@ class MultiHead(nn.Module):
         QWs = self.Q_linear(Q).split(self.hidden_size // self.n_splits, dim=-1)
         KWs = self.K_linear(K).split(self.hidden_size // self.n_splits, dim=-1)
         VWs = self.V_linear(V).split(self.hidden_size // self.n_splits, dim=-1)
+        # lists
         # |QW_i| = (batch_size, m, hidden_size / n_splits)
         # |KW_i| = |VW_i| = (batch_size, n, hidden_size / n_splits)
 
@@ -166,7 +168,7 @@ class DecoderBlock(nn.Module):
 
         # In case of inference, we don't have to repeat same feed-forward operations.
         # Thus, we save previous feed-forward results.
-        if prev is None: # Training mode
+        if prev is None:  # Training mode
             # |x|           = (batch_size, m, hidden_size)
             # |prev|        = None
             # |future_mask| = (batch_size, m, m)
@@ -182,7 +184,7 @@ class DecoderBlock(nn.Module):
             z = x + self.masked_attn_dropout(
                 self.masked_attn(z, z, z, mask=future_mask)
             )
-        else: # Inference mode
+        else:  # Inference mode
             # |x|           = (batch_size, 1, hidden_size)
             # |prev|        = (batch_size, t - 1, hidden_size)
             # |future_mask| = None
@@ -274,7 +276,7 @@ class Transformer(nn.Module):
                 n_splits,
                 dropout_p,
                 use_leaky_relu,
-              ) for _ in range(n_enc_blocks)],
+            ) for _ in range(n_enc_blocks)],
         )
         self.decoder = MySequential(
             *[DecoderBlock(
@@ -282,10 +284,10 @@ class Transformer(nn.Module):
                 n_splits,
                 dropout_p,
                 use_leaky_relu,
-              ) for _ in range(n_dec_blocks)],
+            ) for _ in range(n_dec_blocks)],
         )
         self.generator = nn.Sequential(
-            nn.LayerNorm(hidden_size), # Only for Pre-LN Transformer.
+            nn.LayerNorm(hidden_size),  # Only for Pre-LN Transformer.
             nn.Linear(hidden_size, output_size),
             nn.LogSoftmax(dim=-1),
         )
@@ -360,9 +362,11 @@ class Transformer(nn.Module):
 
         # Generate future mask
         with torch.no_grad():
-            future_mask = torch.triu(x.new_ones((y.size(1), y.size(1))), diagonal=1).bool()
+            future_mask = torch.triu(x.new_ones(
+                (y.size(1), y.size(1))), diagonal=1).bool()
             # |future_mask| = (m, m)
-            future_mask = future_mask.unsqueeze(0).expand(y.size(0), *future_mask.size())
+            future_mask = future_mask.unsqueeze(
+                0).expand(y.size(0), *future_mask.size())
             # |fwd_mask| = (batch_size, m, m)
 
         h = self.emb_dropout(self._position_encoding(self.emb_dec(y)))
@@ -382,7 +386,8 @@ class Transformer(nn.Module):
         # |mask| = (batch_size, n)
         x = x[0]
 
-        mask_enc = mask.unsqueeze(1).expand(mask.size(0), x.size(1), mask.size(-1))
+        mask_enc = mask.unsqueeze(1).expand(
+            mask.size(0), x.size(1), mask.size(-1))
         mask_dec = mask.unsqueeze(1)
         # |mask_enc| = (batch_size, n, n)
         # |mask_dec| = (batch_size, 1, n)
@@ -404,7 +409,8 @@ class Transformer(nn.Module):
             # Unlike training procedure,
             # take the last time-step's output during the inference.
             h_t = self.emb_dropout(
-                self._position_encoding(self.emb_dec(y_t_1), init_pos=len(indice))
+                self._position_encoding(
+                    self.emb_dec(y_t_1), init_pos=len(indice))
             )
             # |h_t| = (batch_size, 1, hidden_size))
             if prevs[0] is None:
@@ -422,16 +428,17 @@ class Transformer(nn.Module):
                 if prevs[layer_index + 1] is None:
                     prevs[layer_index + 1] = h_t
                 else:
-                    prevs[layer_index + 1] = torch.cat([prevs[layer_index + 1], h_t], dim=1)
+                    prevs[layer_index +
+                          1] = torch.cat([prevs[layer_index + 1], h_t], dim=1)
                 # |prev| = (batch_size, len(y_hats) + 1, hidden_size)
 
             y_hat_t = self.generator(h_t)
             # |y_hat_t| = (batch_size, 1, output_size)
 
             y_hats += [y_hat_t]
-            if is_greedy: # Argmax
+            if is_greedy:  # Argmax
                 y_t_1 = torch.topk(y_hat_t, 1, dim=-1)[1].squeeze(-1)
-            else: # Random sampling                
+            else:  # Random sampling
                 y_t_1 = torch.multinomial(y_hat_t.exp().view(x.size(0), -1), 1)
             # Put PAD if the sample is done.
             y_t_1 = y_t_1.masked_fill_(
@@ -452,7 +459,7 @@ class Transformer(nn.Module):
 
         return y_hats, indice
 
-    #@profile
+    # @profile
     def batch_beam_search(
         self,
         x,
@@ -469,7 +476,8 @@ class Transformer(nn.Module):
         # |mask| = (batch_size, n)
         x = x[0]
 
-        mask_enc = mask.unsqueeze(1).expand(mask.size(0), x.size(1), mask.size(-1))
+        mask_enc = mask.unsqueeze(1).expand(
+            mask.size(0), x.size(1), mask.size(-1))
         mask_dec = mask.unsqueeze(1)
         # |mask_enc| = (batch_size, n, n)
         # |mask_dec| = (batch_size, 1, n)
@@ -518,13 +526,13 @@ class Transformer(nn.Module):
             fab_input, fab_z, fab_mask = [], [], []
             fab_prevs = [[] for _ in range(n_dec_layers + 1)]
 
-            for i, board in enumerate(boards): # i == sample_index in minibatch
+            for i, board in enumerate(boards):  # i == sample_index in minibatch
                 if board.is_done() == 0:
                     y_hat_i, prev_status = board.get_batch()
 
-                    fab_input += [y_hat_i                 ]
-                    fab_z     += [z[i].unsqueeze(0)       ] * beam_size
-                    fab_mask  += [mask_dec[i].unsqueeze(0)] * beam_size
+                    fab_input += [y_hat_i]
+                    fab_z += [z[i].unsqueeze(0)] * beam_size
+                    fab_mask += [mask_dec[i].unsqueeze(0)] * beam_size
 
                     for layer_index in range(n_dec_layers + 1):
                         prev_i = prev_status['prev_state_%d' % layer_index]
@@ -534,9 +542,9 @@ class Transformer(nn.Module):
                             fab_prevs[layer_index] = None
 
             fab_input = torch.cat(fab_input, dim=0)
-            fab_z     = torch.cat(fab_z,     dim=0)
-            fab_mask  = torch.cat(fab_mask,  dim=0)
-            for i, fab_prev in enumerate(fab_prevs): # i == layer_index
+            fab_z = torch.cat(fab_z,     dim=0)
+            fab_mask = torch.cat(fab_mask,  dim=0)
+            for i, fab_prev in enumerate(fab_prevs):  # i == layer_index
                 if fab_prev is not None:
                     fab_prevs[i] = torch.cat(fab_prev, dim=0)
             # |fab_input|    = (current_batch_size, 1,)
@@ -548,7 +556,8 @@ class Transformer(nn.Module):
             # Unlike training procedure,
             # take the last time-step's output during the inference.
             h_t = self.emb_dropout(
-                self._position_encoding(self.emb_dec(fab_input), init_pos=length)
+                self._position_encoding(
+                    self.emb_dec(fab_input), init_pos=length)
             )
             # |h_t| = (current_batch_size, 1, hidden_size)
             if fab_prevs[0] is None:
@@ -569,7 +578,7 @@ class Transformer(nn.Module):
                     fab_prevs[layer_index + 1] = torch.cat(
                         [fab_prevs[layer_index + 1], h_t],
                         dim=1,
-                    ) # Append new hidden state for each layer.
+                    )  # Append new hidden state for each layer.
 
             y_hat_t = self.generator(h_t)
             # |y_hat_t| = (batch_size, 1, output_size)
@@ -583,7 +592,8 @@ class Transformer(nn.Module):
 
                     prev_status = {}
                     for layer_index in range(n_dec_layers + 1):
-                        prev_status['prev_state_%d' % layer_index] = fab_prevs[layer_index][begin:end]
+                        prev_status['prev_state_%d' %
+                                    layer_index] = fab_prevs[layer_index][begin:end]
 
                     board.collect_result(y_hat_t[begin:end], prev_status)
 
@@ -595,9 +605,10 @@ class Transformer(nn.Module):
         batch_sentences, batch_probs = [], []
 
         for i, board in enumerate(boards):
-            sentences, probs = board.get_n_best(n_best, length_penalty=length_penalty)
+            sentences, probs = board.get_n_best(
+                n_best, length_penalty=length_penalty)
 
             batch_sentences += [sentences]
-            batch_probs     += [probs]
+            batch_probs += [probs]
 
         return batch_sentences, batch_probs

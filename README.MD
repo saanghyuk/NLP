@@ -44,5 +44,6 @@
 | 2021/12/2 Thu  | Trainer.py, Train.py, Data Loader, continue_train.py         | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/seq2seq.py), [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/trainer.py) |
 | 2021/12/3 Fri  | Inference, Greedy Search, Penalty, Search Function, Translate.py | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/translate.py) |
 | 2021/12/4 Sat  | Evaluations(BLEU), Beam Search(Continue)                     | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/search.py) |
-| 2021/12/5 Sun  | Beam Search, [Transformer](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf) | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/search.py) |
+| 2021/12/5 Sun  | Beam Search, [Transformer](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf), [Rectified Adam](https://github.com/LiyuanLucasLiu/RAdam), [On Layer Normalization(Xiong et al., 2020)](http://proceedings.mlr.press/v119/xiong20b/xiong20b.pdf) | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/search.py) |
+| 2021/12/6 Mon  | Transformer Implementation/Code Review                       |                                                              |
 
