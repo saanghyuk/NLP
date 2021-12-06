@@ -24,7 +24,7 @@ class Attention(nn.Module):
         # |query| = (batch_size, 1, hidden_size)
         # same shape result because linear transformation with (hs, hs) matrix
 
-        # transpose : (batch_size, length, hidden_size) => (batch_size, hidden_size, length)
+        # transpose : (batch_size, leng.th, hidden_size) => (batch_size, hidden_size, length)
         weight = torch.bmm(query, h_src.transpose(1, 2))
         # |weight| = (batch_size, 1, length)
         if mask is not None:

@@ -6,7 +6,6 @@ from simple_nmt.search import SingleBeamSearchBoard
 
 
 class Attention(nn.Module):
-
     def __init__(self):
         super().__init__()
 
@@ -120,7 +119,7 @@ class EncoderBlock(nn.Module):
         # z = self.attn_norm(x + self.attn_dropout(self.attn(Q=x,
         #                                                    K=x,
         #                                                    V=x,
-        #                                                    mask=mask)))
+        #                                                     mask=mask)))
         # z = self.fc_norm(z + self.fc_dropout(self.fc(z)))
 
         # Pre-LN:
@@ -163,8 +162,8 @@ class DecoderBlock(nn.Module):
         self.fc_dropout = nn.Dropout(dropout_p)
 
     def forward(self, x, key_and_value, mask, prev, future_mask):
-        # |key_and_value| = (batch_size, n, hidden_size)
-        # |mask|          = (batch_size, m, n)
+        # |key_and_value| = (batch_size, n, hidden_size) => encoder output
+        # |mask|          = (batch_size, m, n) = mask for pad in encoder
 
         # In case of inference, we don't have to repeat same feed-forward operations.
         # Thus, we save previous feed-forward results.
@@ -185,17 +184,23 @@ class DecoderBlock(nn.Module):
                 self.masked_attn(z, z, z, mask=future_mask)
             )
         else:  # Inference mode
+            # When Inferencing, in the Decoder self attention part,
+            # Single input calculates the self attention with previous hidden states
+
             # |x|           = (batch_size, 1, hidden_size)
-            # |prev|        = (batch_size, t - 1, hidden_size)
+            # |prev|        = (batch_size, t, hidden_size)
             # |future_mask| = None
             # |z|           = (batch_size, 1, hidden_size)
 
             # Post-LN:
             # z = self.masked_attn_norm(x + self.masked_attn_dropout(
-            #     self.masked_attn(x, prev, prev, mask=None)
+            #     self.masked_attn(x, prev, prev, mask=None) # attention to prev
             # ))
 
             # Pre-LN:
+            # input one by one
+            # However, we have the hidden state tensor of every time stamp
+            # ***prev also containes x itself***
             normed_prev = self.masked_attn_norm(prev)
             z = self.masked_attn_norm(x)
             z = x + self.masked_attn_dropout(
@@ -232,7 +237,7 @@ class MySequential(nn.Sequential):
         # nn.Sequential class does not provide multiple input arguments and returns.
         # Thus, we need to define new class to solve this issue.
         # Note that each block has same function interface.
-
+        # change only forward function to make input and output as tuple
         for module in self._modules.values():
             x = module(*x)
 
@@ -263,11 +268,12 @@ class Transformer(nn.Module):
         self.max_length = max_length
 
         super().__init__()
-
+        # in Transformer, hidden_size is same with embedding size.
         self.emb_enc = nn.Embedding(input_size, hidden_size)
         self.emb_dec = nn.Embedding(output_size, hidden_size)
         self.emb_dropout = nn.Dropout(dropout_p)
 
+        # Create the positional embedding matrix once, and use it whenever needs
         self.pos_enc = self._generate_pos_enc(hidden_size, max_length)
 
         self.encoder = MySequential(
@@ -310,11 +316,15 @@ class Transformer(nn.Module):
     def _position_encoding(self, x, init_pos=0):
         # |x| = (batch_size, n, hidden_size)
         # |self.pos_enc| = (max_length, hidden_size)
+
+        # init_pos will be used in inference, because in inference, model will take input one by one.
+        # if every input has same positional encoding, it would be not reasonable.
         assert x.size(-1) == self.pos_enc.size(-1)
         assert x.size(1) + init_pos <= self.max_length
 
         pos_enc = self.pos_enc[init_pos:init_pos + x.size(1)].unsqueeze(0)
         # |pos_enc| = (1, n, hidden_size)
+        # 1 will be broadcasting
         x = x + pos_enc.to(x.device)
 
         return x
@@ -351,12 +361,15 @@ class Transformer(nn.Module):
             # |mask| = (batch_size, n)
             x = x[0]
 
-            mask_enc = mask.unsqueeze(1).expand(*x.size(), mask.size(-1))
+            mask_enc = mask.unsqueeze(1).expand(
+                *x.size(), mask.size(-1))  # *(bs, n), n
             mask_dec = mask.unsqueeze(1).expand(*y.size(), mask.size(-1))
             # |mask_enc| = (batch_size, n, n)
             # |mask_dec| = (batch_size, m, n)
 
         z = self.emb_dropout(self._position_encoding(self.emb_enc(x)))
+
+        # we don't need mask from last layer.
         z, _ = self.encoder(z, mask_enc)
         # |z| = (batch_size, n, hidden_size)
 
@@ -367,13 +380,14 @@ class Transformer(nn.Module):
             # |future_mask| = (m, m)
             future_mask = future_mask.unsqueeze(
                 0).expand(y.size(0), *future_mask.size())
-            # |fwd_mask| = (batch_size, m, m)
+            # |future_mask| = (batch_size, m, m)
 
         h = self.emb_dropout(self._position_encoding(self.emb_dec(y)))
         h, _, _, _, _ = self.decoder(h, z, mask_dec, None, future_mask)
         # |h| = (batch_size, m, hidden_size)
 
         y_hat = self.generator(h)
+        # log probability
         # |y_hat| = (batch_size, m, output_size)
 
         return y_hat
