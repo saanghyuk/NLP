@@ -393,6 +393,8 @@ class Transformer(nn.Module):
         return y_hat
 
     def search(self, x, is_greedy=True, max_length=255):
+        # is_greedy = True : will pick the most high probability vocab
+        # is_greedy = False : Randomly choose with corresponding probability distribution
         # |x[0]| = (batch_size, n)
         batch_size = x[0].size(0)
 
@@ -413,6 +415,8 @@ class Transformer(nn.Module):
         # Fill a vector, which has 'batch_size' dimension, with BOS value.
         y_t_1 = x.new(batch_size, 1).zero_() + data_loader.BOS
         # |y_t_1| = (batch_size, 1)
+
+        # if is_decoding=True => now in the decoding process
         is_decoding = x.new_ones(batch_size, 1).bool()
 
         prevs = [None for _ in range(len(self.decoder._modules) + 1)]
@@ -426,10 +430,12 @@ class Transformer(nn.Module):
                 self._position_encoding(
                     self.emb_dec(y_t_1), init_pos=len(indice))
             )
-            # |h_t| = (batch_size, 1, hidden_size))
+            # |h_t| = (batch_size, 1, hidden_size)
             if prevs[0] is None:
+                # right after embedding layer
                 prevs[0] = h_t
             else:
+                # 0 means 0 layer(right after embedding layer)
                 prevs[0] = torch.cat([prevs[0], h_t], dim=1)
 
             for layer_index, block in enumerate(self.decoder._modules.values()):
@@ -445,7 +451,7 @@ class Transformer(nn.Module):
                     prevs[layer_index +
                           1] = torch.cat([prevs[layer_index + 1], h_t], dim=1)
                 # |prev| = (batch_size, len(y_hats) + 1, hidden_size)
-
+            # last h_t
             y_hat_t = self.generator(h_t)
             # |y_hat_t| = (batch_size, 1, output_size)
 
@@ -454,7 +460,10 @@ class Transformer(nn.Module):
                 y_t_1 = torch.topk(y_hat_t, 1, dim=-1)[1].squeeze(-1)
             else:  # Random sampling
                 y_t_1 = torch.multinomial(y_hat_t.exp().view(x.size(0), -1), 1)
+
             # Put PAD if the sample is done.
+            # Even when the EOS picked, the model will keep making values
+            # So, if finished, we make this timestep value as <PAD>
             y_t_1 = y_t_1.masked_fill_(
                 ~is_decoding,
                 data_loader.PAD,

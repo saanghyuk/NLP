@@ -46,4 +46,5 @@
 | 2021/12/4 Sat  | Evaluations(BLEU), Beam Search(Continue)                     | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/search.py) |
 | 2021/12/5 Sun  | Beam Search, [Transformer](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf), [Rectified Adam](https://github.com/LiyuanLucasLiu/RAdam), [On Layer Normalization(Xiong et al., 2020)](http://proceedings.mlr.press/v119/xiong20b/xiong20b.pdf) | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/search.py) |
 | 2021/12/6 Mon  | Transformer Implementation/Code Review                       | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/transformer.py) |
+| 2021/12/7 Tue  | Transformer Implementation(Search & Beam Search)/Code Review | Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/transformer.py) |
 

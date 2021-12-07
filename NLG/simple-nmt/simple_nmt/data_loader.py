@@ -89,8 +89,9 @@ class DataLoader():
         self.src.vocab = src_vocab
         self.tgt.vocab = tgt_vocab
 
-
         # this is overriding of torchtext Translation Dataset
+
+
 class TranslationDataset(data.Dataset):
     """Defines a dataset for machine translation."""
 
@@ -124,7 +125,8 @@ class TranslationDataset(data.Dataset):
                 if max_length and max_length < max(len(src_line.split()), len(trg_line.split())):
                     continue
                 if src_line != '' and trg_line != '':
-                    examples += [data.Example.fromlist([src_line, trg_line], fields)]
+                    examples += [data.Example.fromlist(
+                        [src_line, trg_line], fields)]
 
         super().__init__(examples, fields, **kwargs)
 
