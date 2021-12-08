@@ -604,7 +604,7 @@ class Transformer(nn.Module):
                     )  # Append new hidden state for each layer.
 
             y_hat_t = self.generator(h_t)
-            # |y_hat_t| = (batch_size, 1, output_size)
+            # |y_hat_t| = (batch_size*beam_size, 1, output_size)
 
             # |fab_prevs[i][begin:end]| = (beam_size, length, hidden_size)
             cnt = 0
