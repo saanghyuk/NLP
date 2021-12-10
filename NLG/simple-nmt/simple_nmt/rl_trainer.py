@@ -32,23 +32,37 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
         # In addition, GLEU is variation of BLEU, and it is more fit to reinforcement learning.
         sf = SmoothingFunction()
         score_func = {
-            'gleu':  lambda ref, hyp: sentence_gleu([ref], hyp, max_len=n_gram),
+            'gleu': lambda ref, hyp: sentence_gleu([ref], hyp, max_len=n_gram),
+            # in the bleu, length of the weights will do same function with max_len in gleu
             'bleu1': lambda ref, hyp: sentence_bleu([ref], hyp,
-                                                    weights=[1./n_gram] * n_gram,
+                                                    weights=[
+                                                        1./n_gram] * n_gram,
                                                     smoothing_function=sf.method1),
             'bleu2': lambda ref, hyp: sentence_bleu([ref], hyp,
-                                                    weights=[1./n_gram] * n_gram,
+                                                    weights=[
+                                                        1./n_gram] * n_gram,
                                                     smoothing_function=sf.method2),
             'bleu4': lambda ref, hyp: sentence_bleu([ref], hyp,
-                                                    weights=[1./n_gram] * n_gram,
+                                                    weights=[
+                                                        1./n_gram] * n_gram,
                                                     smoothing_function=sf.method4),
         }[method]
 
         # Since we don't calculate reward score exactly as same as multi-bleu.perl,
         # (especialy we do have different tokenization,) I recommend to set n_gram to 6.
+        # if n_gram is 6, BLEU score would be weighted average of 1~6 gram.
 
+        # index of one-hot
         # |y| = (batch_size, length1)
         # |y_hat| = (batch_size, length2)
+        # output should be BLEU score per each sentence
+
+        # we preprocessed the data with {Mecab or Moses(NLTK) + BPE}
+        # when we score the sentence outside, the process was "Detokenize => Mecab or Moses => Scoring"
+        # the recurring of all these processes are too complicated in the python function(Too slow).
+        # So, we score the BLEU with just {Mecab or Moses(NLTK) + BPE} these output.
+        # Therefore, we score the BLEU with the fully tokenized sentence.
+        # Sentences' tokens are much slighther. That's the reason why we use 6 n_gram.
 
         with torch.no_grad():
             scores = []
@@ -68,12 +82,12 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
                 # ref = y[b].masked_select(y[b] != data_loader.PAD).tolist()
                 # hyp = y_hat[b].masked_select(y_hat[b] != data_loader.PAD).tolist()
 
+                # no need to change to words.
                 scores += [score_func(ref, hyp) * 100.]
             scores = torch.FloatTensor(scores).to(y.device)
             # |scores| = (batch_size)
 
             return scores
-
 
     @staticmethod
     def _get_loss(y_hat, indice, reward=1):
@@ -118,7 +132,7 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
         # before to take another step in gradient descent.
         engine.model.train()
         if engine.state.iteration % engine.config.iteration_per_update == 1 or \
-            engine.config.iteration_per_update == 1:
+                engine.config.iteration_per_update == 1:
             if engine.state.iteration > 1:
                 engine.optimizer.zero_grad()
 
@@ -185,14 +199,15 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
             indice,
             reward=reward
         )
-        backward_target = loss.div(y.size(0)).div(engine.config.iteration_per_update)
+        backward_target = loss.div(y.size(0)).div(
+            engine.config.iteration_per_update)
         backward_target.backward()
 
         p_norm = float(get_parameter_norm(engine.model.parameters()))
         g_norm = float(get_grad_norm(engine.model.parameters()))
 
         if engine.state.iteration % engine.config.iteration_per_update == 0 and \
-            engine.state.iteration > 0:
+                engine.state.iteration > 0:
             # In orther to avoid gradient exploding, we apply gradient clipping.
             torch_utils.clip_grad_norm_(
                 engine.model.parameters(),
@@ -245,8 +260,9 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
     def attach(
         train_engine,
         validation_engine,
-        training_metric_names = ['actor', 'baseline', 'reward', '|param|', '|g_param|'],
-        validation_metric_names = ['BLEU', ],
+        training_metric_names=['actor', 'baseline',
+                               'reward', '|param|', '|g_param|'],
+        validation_metric_names=['BLEU', ],
         verbose=VERBOSE_BATCH_WISE
     ):
         # Attaching would be repaeted for serveral metrics.
@@ -297,7 +313,8 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
     @staticmethod
     def resume_training(engine, resume_epoch):
         resume_epoch = max(1, resume_epoch - engine.config.n_epochs)
-        engine.state.iteration = (resume_epoch - 1) * len(engine.state.dataloader)
+        engine.state.iteration = (resume_epoch - 1) * \
+            len(engine.state.dataloader)
         engine.state.epoch = (resume_epoch - 1)
 
     @staticmethod

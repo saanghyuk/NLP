@@ -49,5 +49,5 @@
 | 2021/12/7 Tue  | Transformer Implementation(Search & Beam Search)/Code Review | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/models/transformer.py) |
 | 2021/12/8 Wed  | Intro to Advanced topics on NLG(Model Ensemble, Back/Copied Translation) |                                                              |
 | 2021/12/9 Thu  | REINFORCE algorithm(with Baseline), [Minimum Risk Training for Neural Machine Translation](https://arxiv.org/pdf/1512.02433.pdf) |                                                              |
-| 2021/12/10 Fri | [Minimum Risk Training](https://arxiv.org/abs/1512.02433)    |                                                              |
+| 2021/12/10 Fri | [Minimum Risk Training](https://arxiv.org/abs/1512.02433), Reinforcement Learning Trainer | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/rl_trainer.py) |
 

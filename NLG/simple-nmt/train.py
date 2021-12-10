@@ -173,6 +173,8 @@ def define_argparser(is_continue=False):
         default=.01,
         help='Learning rate for reinforcement learning. Default=%(default)s'
     )
+
+    # To make base line, how many samplings you need?
     p.add_argument(
         '--rl_n_samples',
         type=int,
@@ -185,6 +187,8 @@ def define_argparser(is_continue=False):
         default=10,
         help='Number of epochs for reinforcement learning. Default=%(default)s'
     )
+
+    # 1~4 gram? 1~5 gram?, default 1~6 gram
     p.add_argument(
         '--rl_n_gram',
         type=int,
@@ -352,6 +356,7 @@ def main(config, model_weight=None, opt_weight=None):
         lr_scheduler=lr_scheduler,
     )
 
+    # if rl_n_epohs are bigger than 0, prepare the train configuration
     if config.rl_n_epochs > 0:
         optimizer = optim.SGD(model.parameters(), lr=config.rl_lr)
         mrt_trainer = SingleTrainer(MinimumRiskTrainingEngine, config)
