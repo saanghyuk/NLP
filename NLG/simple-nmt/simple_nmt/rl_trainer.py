@@ -91,7 +91,9 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
 
     @staticmethod
     def _get_loss(y_hat, indice, reward=1):
+        # sampling index
         # |indice| = (batch_size, length)
+        # sampling log probability distribution
         # |y_hat| = (batch_size, length, output_size)
         # |reward| = (batch_size,)
         batch_size = indice.size(0)
@@ -99,10 +101,14 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
 
         '''
         # Memory inefficient but more readable version
+        # we will not calculate the loss to the PAD position
         mask = indice == data_loader.PAD
         # |mask| = (batch_size, length)
+
+        # indice(sampling) to one-hot
         indice = F.one_hot(indice, num_classes=output_size).float()
         # |indice| = (batch_size, length, output_size)
+
         log_prob = (y_hat * indice).sum(dim=-1)
         # |log_prob| = (batch_size, length)
         log_prob.masked_fill_(mask, 0)
@@ -150,9 +156,13 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
         # Take sampling process because set False for is_greedy.
         y_hat, indice = engine.model.search(
             x,
+            # is_greedy means 'random sampling with distribution'
+            # in rl, exploration is also very important
             is_greedy=False,
             max_length=engine.config.max_length
         )
+        # |y_hat| : (bs, m, |V_tgt|)
+        # |indices| : (bs, m)
 
         with torch.no_grad():
             # Based on the result of sampling, get reward.
@@ -169,7 +179,7 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
             # Take samples as many as n_samples, and get average rewards for them.
             # I figured out that n_samples = 1 would be enough.
             baseline = []
-
+            # only sampling indices are needed.
             for _ in range(engine.config.rl_n_samples):
                 _, sampled_indice = engine.model.search(
                     x,
@@ -184,7 +194,7 @@ class MinimumRiskTrainingEngine(MaximumLikelihoodEstimationEngine):
                         method=engine.config.rl_reward,
                     )
                 ]
-
+            # (bs) * k =stack=> (K, bs) =mean=> bs
             baseline = torch.stack(baseline).mean(dim=0)
             # |baseline| = (n_samples, batch_size) --> (batch_size)
 
