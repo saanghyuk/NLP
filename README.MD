@@ -51,4 +51,6 @@
 | 2021/12/9 Thu  | REINFORCE algorithm(with Baseline), [Minimum Risk Training for Neural Machine Translation](https://arxiv.org/pdf/1512.02433.pdf) |                                                              |
 | 2021/12/10 Fri | [Minimum Risk Training](https://arxiv.org/abs/1512.02433), Reinforcement Learning Trainer | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/rl_trainer.py) |
 | 2021/12/11 Sat | Reinforcement Learning Code Implementation                   | [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/simple_nmt/rl_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/NLG/simple-nmt/train.py) |
+| 2021/12/12 Sun | [Dual Learning](https://arxiv.org/pdf/1707.00415.pdf)        |                                                              |
+| 2021/12/13 Mon | Dual Supervised Learning Implementation                      |                                                              |
 
