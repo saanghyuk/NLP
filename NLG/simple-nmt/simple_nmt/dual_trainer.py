@@ -50,6 +50,8 @@ class DualSupervisedTrainingEngine(Engine):
 
     @staticmethod
     def _reorder(x, y, l):
+        # l parameter will take the lengths of y
+
         # This method is one of important methods in this class.
         # Since encoder takes packed_sequence instance,
         # the samples in mini-batch must be sorted by lengths.
@@ -57,9 +59,11 @@ class DualSupervisedTrainingEngine(Engine):
         # (Because originally src and tgt are sorted by the length of samples in src.)
 
         # sort by length.
+        # this is not a python list sort, this is pytorch sort
         indice = l.sort(descending=True)[1]
 
         # re-order based on the indice.
+        # |x|, |y|  = (bs, |V_tgt|)
         x_ = x.index_select(dim=0, index=indice).contiguous()
         y_ = y.index_select(dim=0, index=indice).contiguous()
         l_ = l.index_select(dim=0, index=indice).contiguous()
@@ -71,12 +75,17 @@ class DualSupervisedTrainingEngine(Engine):
 
     @staticmethod
     def _restore_order(x, restore_indice):
+        # data loader give us length of the data of each sentence
         return x.index_select(dim=0, index=restore_indice)
 
     @staticmethod
     def _get_loss(x, y, x_hat, y_hat, crits, x_lm=None, y_lm=None, lagrange=1e-3):
+        # real answer vector |x|
         # |x| = (batch_size, n)
+        # real answer vector |y|
         # |y| = (batch_size, m)
+
+        # x_hat/y_hat is log likelihood
         # |x_hat| = (batch_size, n, output_size0)
         # |y_hat| = (batch_size, m, output_size1)
         # |x_lm| = |x_hat|
@@ -98,9 +107,12 @@ class DualSupervisedTrainingEngine(Engine):
         # |log_p_y_given_x| = |log_p_x_given_y| = (batch_size, )
 
         # Negative Log-likelihood
+        # we call '-critic', this means log_p_y_give_x/y is log_likelihodd until now.
         loss_x2y = -log_p_y_given_x
         loss_y2x = -log_p_x_given_y
 
+        # if the two models are in warm-up stage, the x_lm and y_lm will be None.
+        # when this situation, lambda term will not be added while training
         if x_lm is not None and y_lm is not None:
             log_p_x = -crits[Y2X](
                 x_lm.contiguous().view(-1, x_lm.size(-1)),
@@ -118,12 +130,19 @@ class DualSupervisedTrainingEngine(Engine):
             # |log_p_x| = (batch_size, )
             # |log_p_y| = (batch_size, )
 
-            # Just for logging: both losses are detached.
-            dual_loss = lagrange * ((log_p_x + log_p_y_given_x.detach()) - (log_p_y + log_p_x_given_y.detach()))**2
+            # ***Just for logging***: both losses are detached.
+            # lagrange just means lambda in the paper
+            dual_loss = lagrange * \
+                ((log_p_x + log_p_y_given_x.detach()) -
+                 (log_p_y + log_p_x_given_y.detach()))**2
 
             # Note that 'detach()' is used to prevent unnecessary back-propagation.
-            loss_x2y += lagrange * ((log_p_x + log_p_y_given_x) - (log_p_y + log_p_x_given_y.detach()))**2
-            loss_y2x += lagrange * ((log_p_x + log_p_y_given_x.detach()) - (log_p_y + log_p_x_given_y))**2
+            loss_x2y += lagrange * \
+                ((log_p_x + log_p_y_given_x) -
+                 (log_p_y + log_p_x_given_y.detach()))**2
+            loss_y2x += lagrange * \
+                ((log_p_x + log_p_y_given_x.detach()) -
+                 (log_p_y + log_p_x_given_y))**2
         else:
             dual_loss = None
 
@@ -141,29 +160,33 @@ class DualSupervisedTrainingEngine(Engine):
             language_model.eval()
             model.train()
             if engine.state.iteration % engine.config.iteration_per_update == 1 or \
-                engine.config.iteration_per_update == 1:
+                    engine.config.iteration_per_update == 1:
                 if engine.state.iteration > 1:
                     optimizer.zero_grad()
 
         device = next(engine.models[0].parameters()).device
-        mini_batch.src = (mini_batch.src[0].to(device), mini_batch.src[1].to(device))
-        mini_batch.tgt = (mini_batch.tgt[0].to(device), mini_batch.tgt[1].to(device))
-        
+        mini_batch.src = (mini_batch.src[0].to(
+            device), mini_batch.src[1].to(device))
+        mini_batch.tgt = (mini_batch.tgt[0].to(
+            device), mini_batch.tgt[1].to(device))
+
         with autocast(not engine.config.off_autocast):
             # X2Y
-            x, y = (mini_batch.src[0][:, 1:-1], mini_batch.src[1] - 2), mini_batch.tgt[0][:, :-1]
+            # -2 : because we remove <BOS> and <EOS> tokens.
+            x, y = (mini_batch.src[0][:, 1:-1],
+                    mini_batch.src[1] - 2), mini_batch.tgt[0][:, :-1]
             x_hat_lm, y_hat_lm = None, None
             # |x| = (batch_size, n)
             # |y| = (batch_size, m)
             y_hat = engine.models[X2Y](x, y)
             # |y_hat| = (batch_size, m, y_vocab_size)
-            
+
             if engine.state.epoch > engine.config.dsl_n_warmup_epochs:
                 with torch.no_grad():
                     y_hat_lm = engine.language_models[X2Y](y)
                     # |y_hat_lm| = |y_hat|
 
-            #Y2X
+            # Y2X
             # Since encoder in seq2seq takes packed_sequence instance,
             # we need to re-sort if we use reversed src and tgt.
             x, y, restore_indice = DualSupervisedTrainingEngine._reorder(
@@ -188,6 +211,7 @@ class DualSupervisedTrainingEngine(Engine):
                     # |x_hat_lm| = |x_hat|
 
             x, y = mini_batch.src[0][:, 1:], mini_batch.tgt[0][:, 1:]
+            # dual_loss is just for logging
             loss_x2y, loss_y2x, dual_loss = DualSupervisedTrainingEngine._get_loss(
                 x, y,
                 x_hat, y_hat,
@@ -199,8 +223,10 @@ class DualSupervisedTrainingEngine(Engine):
             )
 
             backward_targets = [
-                loss_x2y.div(y.size(0)).div(engine.config.iteration_per_update),
-                loss_y2x.div(x.size(0)).div(engine.config.iteration_per_update),
+                loss_x2y.div(y.size(0)).div(
+                    engine.config.iteration_per_update),
+                loss_y2x.div(x.size(0)).div(
+                    engine.config.iteration_per_update),
             ]
 
         for scaler, backward_target in zip(engine.scalers, backward_targets):
@@ -209,15 +235,15 @@ class DualSupervisedTrainingEngine(Engine):
             else:
                 backward_target.backward()
 
-        x_word_count = int(mini_batch.src[1].sum())
-        y_word_count = int(mini_batch.tgt[1].sum())
-        p_norm = float(get_parameter_norm(list(engine.models[X2Y].parameters()) + 
+        x_word_count = int(mini_batch.src[1].sum())  # word_count of x
+        y_word_count = int(mini_batch.tgt[1].sum())  # word_count of y
+        p_norm = float(get_parameter_norm(list(engine.models[X2Y].parameters()) +
                                           list(engine.models[Y2X].parameters())))
         g_norm = float(get_grad_norm(list(engine.models[X2Y].parameters()) +
                                      list(engine.models[Y2X].parameters())))
 
         if engine.state.iteration % engine.config.iteration_per_update == 0 and \
-            engine.state.iteration > 0:
+                engine.state.iteration > 0:
             for model, optimizer, scaler in zip(engine.models,
                                                 engine.optimizers,
                                                 engine.scalers):
@@ -248,12 +274,15 @@ class DualSupervisedTrainingEngine(Engine):
 
         with torch.no_grad():
             device = next(engine.models[0].parameters()).device
-            mini_batch.src = (mini_batch.src[0].to(device), mini_batch.src[1].to(device))
-            mini_batch.tgt = (mini_batch.tgt[0].to(device), mini_batch.tgt[1].to(device))
+            mini_batch.src = (mini_batch.src[0].to(
+                device), mini_batch.src[1].to(device))
+            mini_batch.tgt = (mini_batch.tgt[0].to(
+                device), mini_batch.tgt[1].to(device))
 
             with autocast(not engine.config.off_autocast):
                 # X2Y
-                x, y = (mini_batch.src[0][:, 1:-1], mini_batch.src[1] - 2), mini_batch.tgt[0][:, :-1]
+                x, y = (
+                    mini_batch.src[0][:, 1:-1], mini_batch.src[1] - 2), mini_batch.tgt[0][:, :-1]
                 # |x| = (batch_size, n)
                 # |y| = (batch_size  m)
                 y_hat = engine.models[X2Y](x, y)
@@ -271,7 +300,7 @@ class DualSupervisedTrainingEngine(Engine):
                 )
                 # |x_hat| = (batch_size, n, x_vocab_size)
 
-                # You don't have to use _get_loss method, 
+                # You don't have to use _get_loss method,
                 # because we don't have to care about the gradients.
                 x, y = mini_batch.src[0][:, 1:], mini_batch.tgt[0][:, 1:]
                 loss_x2y = engine.crits[X2Y](
@@ -295,8 +324,8 @@ class DualSupervisedTrainingEngine(Engine):
     def attach(
         train_engine,
         validation_engine,
-        training_metric_names = ['x2y', 'y2x', 'reg', '|param|', '|g_param|'],
-        validation_metric_names = ['x2y', 'y2x'],
+        training_metric_names=['x2y', 'y2x', 'reg', '|param|', '|g_param|'],
+        validation_metric_names=['x2y', 'y2x'],
         verbose=VERBOSE_BATCH_WISE
     ):
         # Attaching would be repaeted for serveral metrics.
@@ -360,7 +389,8 @@ class DualSupervisedTrainingEngine(Engine):
 
     @staticmethod
     def resume_training(engine, resume_epoch):
-        engine.state.iteration = (resume_epoch - 1) * len(engine.state.dataloader)
+        engine.state.iteration = (resume_epoch - 1) * \
+            len(engine.state.dataloader)
         engine.state.epoch = (resume_epoch - 1)
 
     @staticmethod
@@ -382,7 +412,7 @@ class DualSupervisedTrainingEngine(Engine):
         # Set a filename for model of last epoch.
         # We need to put every information to filename, as much as possible.
         model_fn = config.model_fn.split('.')
-        
+
         model_fn = model_fn[:-1] + ['%02d' % train_engine.state.epoch,
                                     '%.2f-%.2f' % (avg_train_x2y,
                                                    np.exp(avg_train_x2y)
