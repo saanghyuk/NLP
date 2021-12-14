@@ -151,6 +151,8 @@ def main(config):
         batch_size=config.batch_size,
         device=-1,
         max_length=config.max_length,
+
+        # "dsl=True" -> most important part
         dsl=True,
     )
 

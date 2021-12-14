@@ -1,3 +1,5 @@
+from simple_nmt.utils import get_grad_norm, get_parameter_norm
+from simple_nmt.trainer import MaximumLikelihoodEstimationEngine
 from copy import deepcopy
 
 import numpy as np
@@ -13,9 +15,6 @@ from ignite.engine import Engine, Events
 VERBOSE_SILENT = 0
 VERBOSE_EPOCH_WISE = 1
 VERBOSE_BATCH_WISE = 2
-
-from simple_nmt.trainer import MaximumLikelihoodEstimationEngine
-from simple_nmt.utils import get_grad_norm, get_parameter_norm
 
 
 class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
@@ -41,7 +40,7 @@ class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
     def train(engine, mini_batch):
         # You have to reset the gradients of all model parameters
         # before to take another step in gradient descent.
-        engine.model.train()        
+        engine.model.train()
         engine.optimizer.zero_grad()
 
         device = next(engine.model.parameters()).device
@@ -51,8 +50,10 @@ class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
         # if 'is_src_target' is true, the trainer would train language model for source language.
         # For dsl case, both x and y has BOS and EOS tokens.
         # Thus, we need to remove BOS and EOS before the training.
-        x = mini_batch.src[0][:, :-1] if engine.is_src_target else mini_batch.tgt[0][:, :-1]
-        y = mini_batch.src[0][:, 1:] if engine.is_src_target else mini_batch.tgt[0][:, 1:]
+        x = mini_batch.src[0][:, :-
+                              1] if engine.is_src_target else mini_batch.tgt[0][:, :-1]
+        y = mini_batch.src[0][:,
+                              1:] if engine.is_src_target else mini_batch.tgt[0][:, 1:]
         # |x| = |y| = (batch_size, length)
 
         with autocast(not engine.config.off_autocast):
@@ -70,7 +71,8 @@ class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
         else:
             backward_target.backward()
 
-        word_count = int(mini_batch.src[1].sum()) if engine.is_src_target else int(mini_batch.tgt[1].sum())
+        word_count = int(mini_batch.src[1].sum()) if engine.is_src_target else int(
+            mini_batch.tgt[1].sum())
         p_norm = float(get_parameter_norm(engine.model.parameters()))
         g_norm = float(get_grad_norm(engine.model.parameters()))
 
@@ -106,8 +108,10 @@ class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
             mini_batch.src = (mini_batch.src[0].to(device), mini_batch.src[1])
             mini_batch.tgt = (mini_batch.tgt[0].to(device), mini_batch.tgt[1])
 
-            x = mini_batch.src[0][:, :-1] if engine.is_src_target else mini_batch.tgt[0][:, :-1]
-            y = mini_batch.src[0][:, 1:] if engine.is_src_target else mini_batch.tgt[0][:, 1:]
+            x = mini_batch.src[0][:, :-
+                                  1] if engine.is_src_target else mini_batch.tgt[0][:, :-1]
+            y = mini_batch.src[0][:,
+                                  1:] if engine.is_src_target else mini_batch.tgt[0][:, 1:]
             # |x| = |y| = (batch_size, length)
 
             with autocast(not engine.config.off_autocast):
@@ -117,11 +121,12 @@ class LanguageModelTrainingEngine(MaximumLikelihoodEstimationEngine):
                 loss = engine.crit(y_hat.contiguous().view(-1, y_hat.size(-1)),
                                    y.contiguous().view(-1),
                                    ).sum()
-            
-        word_count = int(mini_batch.src[1].sum()) if engine.is_src_target else int(mini_batch.tgt[1].sum())
+
+        word_count = int(mini_batch.src[1].sum()) if engine.is_src_target else int(
+            mini_batch.tgt[1].sum())
         loss = float(loss / word_count)
         ppl = np.exp(loss)
-        
+
         return {
             'loss': loss,
             'ppl': ppl,
@@ -154,7 +159,8 @@ class LanguageModelTrainer():
         lr_scheduler=None
     ):
         if src_vocab is not None and tgt_vocab is not None:
-            raise NotImplementedError('You should assign None one of vocab to designate target language.')
+            raise NotImplementedError(
+                'You should assign None one of vocab to designate target language.')
         if src_vocab is None:
             is_src_target = False
         elif tgt_vocab is None:
@@ -181,7 +187,8 @@ class LanguageModelTrainer():
             config=self.config,
         )
 
-        LanguageModelTrainingEngine.attach(trainer, evaluator, verbose=self.config.verbose)
+        LanguageModelTrainingEngine.attach(
+            trainer, evaluator, verbose=self.config.verbose)
 
         def run_validation(engine, evaluator, valid_loader):
             evaluator.run(valid_loader, max_epochs=1)

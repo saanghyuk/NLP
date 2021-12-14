@@ -41,18 +41,20 @@ class LanguageModel(nn.Module):
 
     def forward(self, x, *args):
         # |x| = (batch_size, length)
-        x = self.emb(x) 
+        x = self.emb(x)
         # |x| = (batch_size, length, word_vec_size)
-        x, _ = self.rnn(x) 
+        x, _ = self.rnn(x)
         # |x| = (batch_size, length, hidden_size)
-        x = self.out(x) 
+        x = self.out(x)
         # |x| = (batch_size, length, vocab_size)
         y_hat = self.log_softmax(x)
+        # |y_hat| = (batch_size, length, vocab_size)
 
         return y_hat
 
     def search(self, batch_size=64, max_length=255):
-        x = torch.LongTensor(batch_size, 1).to(next(self.parameters()).device).zero_() + data_loader.BOS
+        x = torch.LongTensor(batch_size, 1).to(
+            next(self.parameters()).device).zero_() + data_loader.BOS
         # |x| = (batch_size, 1)
         is_undone = x.new_ones(batch_size, 1).float()
 
@@ -62,7 +64,8 @@ class LanguageModel(nn.Module):
             x = self.emb(x)
             # |emb_t| = (batch_size, 1, word_vec_size)
 
-            x, (h, c) = self.rnn(x, (h, c)) if h is not None and c is not None else self.rnn(x)
+            x, (h, c) = self.rnn(
+                x, (h, c)) if h is not None and c is not None else self.rnn(x)
             # |x| = (batch_size, 1, hidden_size)
             y_hat = self.log_softmax(x)
             # |y_hat| = (batch_size, 1, output_size)
@@ -71,7 +74,7 @@ class LanguageModel(nn.Module):
             # y = torch.topk(y_hat, 1, dim = -1)[1].squeeze(-1)
             y = torch.multinomial(y_hat.exp().view(batch_size, -1), 1)
             y = y.masked_fill_((1. - is_undone).byte(), data_loader.PAD)
-            is_undone = is_undone * torch.ne(y, data_loader.EOS).float()            
+            is_undone = is_undone * torch.ne(y, data_loader.EOS).float()
             # |y| = (batch_size, 1)
             # |is_undone| = (batch_size, 1)
             indice += [y]
