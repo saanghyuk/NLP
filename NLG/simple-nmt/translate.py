@@ -115,7 +115,7 @@ def is_dsl(train_config):
 def get_vocabs(train_config, config, saved_data):
     if is_dsl(train_config):
         assert config.lang is not None
-
+        # check whether enko or koen
         if config.lang == train_config.lang:
             is_reverse = False
         else:
@@ -166,8 +166,10 @@ def get_model(input_size, output_size, train_config, is_reverse=False):
         else:
             model.load_state_dict(saved_data['model'][1])
     else:
-        model.load_state_dict(saved_data['model'])  # Load weight parameters from the trained model.
-    model.eval()  # We need to turn-on the evaluation mode, which turns off all drop-outs.
+        # Load weight parameters from the trained model.
+        model.load_state_dict(saved_data['model'])
+    # We need to turn-on the evaluation mode, which turns off all drop-outs.
+    model.eval()
 
     return model
 
@@ -185,7 +187,8 @@ if __name__ == '__main__':
     # Load configuration setting in training.
     train_config = saved_data['config']
 
-    src_vocab, tgt_vocab, is_reverse = get_vocabs(train_config, config, saved_data)
+    src_vocab, tgt_vocab, is_reverse = get_vocabs(
+        train_config, config, saved_data)
 
     # Initialize dataloader, but we don't need to read training & test corpus.
     # What we need is just load vocabularies from the previously trained model.
@@ -208,20 +211,22 @@ if __name__ == '__main__':
             lengths = [len(line) for line in lines]
             # original index
             original_indice = [i for i in range(len(lines))]
-                
+
             # lines = [['', '', ''], ['', '', '']]
             sorted_tuples = sorted(
                 zip(lines, lengths, original_indice),
                 key=itemgetter(1),
                 reverse=True,
             )
-            sorted_lines    = [sorted_tuples[i][0] for i in range(len(sorted_tuples))]
-            lengths         = [sorted_tuples[i][1] for i in range(len(sorted_tuples))]
-            original_indice = [sorted_tuples[i][2] for i in range(len(sorted_tuples))]
+            sorted_lines = [sorted_tuples[i][0]
+                            for i in range(len(sorted_tuples))]
+            lengths = [sorted_tuples[i][1] for i in range(len(sorted_tuples))]
+            original_indice = [sorted_tuples[i][2]
+                               for i in range(len(sorted_tuples))]
 
             # Converts string to list of index.
             x = loader.src.numericalize(
-                loader.src.pad(sorted_lines), # <- add <pad>
+                loader.src.pad(sorted_lines),  # <- add <pad>
                 device='cuda:%d' % config.gpu_id if config.gpu_id >= 0 else 'cpu'
             )
             # |x| = (batch_size, length)
@@ -233,8 +238,10 @@ if __name__ == '__main__':
 
                 output = to_text(indice, loader.tgt.vocab)
                 # convert to original index
-                sorted_tuples = sorted(zip(output, original_indice), key=itemgetter(1))
-                output = [sorted_tuples[i][0] for i in range(len(sorted_tuples))]
+                sorted_tuples = sorted(
+                    zip(output, original_indice), key=itemgetter(1))
+                output = [sorted_tuples[i][0]
+                          for i in range(len(sorted_tuples))]
 
                 sys.stdout.write('\n'.join(output) + '\n')
             else:
@@ -251,8 +258,10 @@ if __name__ == '__main__':
                 output = []
                 for i in range(len(batch_indice)):
                     output += [to_text(batch_indice[i], loader.tgt.vocab)]
-                sorted_tuples = sorted(zip(output, original_indice), key=itemgetter(1))
-                output = [sorted_tuples[i][0] for i in range(len(sorted_tuples))]
+                sorted_tuples = sorted(
+                    zip(output, original_indice), key=itemgetter(1))
+                output = [sorted_tuples[i][0]
+                          for i in range(len(sorted_tuples))]
 
                 for i in range(len(output)):
                     sys.stdout.write('\n'.join(output[i]) + '\n')

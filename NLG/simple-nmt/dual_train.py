@@ -172,6 +172,7 @@ def load_lm(fn, language_models):
 
 def get_models(src_vocab_size, tgt_vocab_size, config):
     language_models = [
+        # X2Y
         LanguageModel(
             tgt_vocab_size,
             config.word_vec_size,
@@ -179,7 +180,9 @@ def get_models(src_vocab_size, tgt_vocab_size, config):
             n_layers=config.n_layers,
             dropout_p=config.dropout,
         ),
+        # Y2X
         LanguageModel(
+
             src_vocab_size,
             config.word_vec_size,
             config.hidden_size,
@@ -212,9 +215,11 @@ def get_models(src_vocab_size, tgt_vocab_size, config):
     else:
         models = [
             Seq2Seq(
+                # input size
                 src_vocab_size,
                 config.word_vec_size,
                 config.hidden_size,
+                # output size
                 tgt_vocab_size,
                 n_layers=config.n_layers,
                 dropout_p=config.dropout,
@@ -276,6 +281,8 @@ def main(config, model_weight=None, opt_weight=None):
         batch_size=config.batch_size,
         device=-1,
         max_length=config.max_length,
+
+        # If dsl = True, X/Y will both have <EOS> and <BOS> tokens
         dsl=True,
     )
 
