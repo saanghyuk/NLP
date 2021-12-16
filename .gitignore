@@ -10,3 +10,4 @@
 *.txt
 /NLG/AiHub/
 /NLG/4-nlg/nlp_preprocessing/data/
+/BERT_GPT/5-plm/simple-ntc/data/
