@@ -60,9 +60,9 @@
 
 #### 4.BERT, GPT
 
-| date           | contents     |      |
-| -------------- | ------------ | ---- |
-| 2021/12/16 Thu | Introduction |      |
+| date           | contents            |      |
+| -------------- | ------------------- | ---- |
+| 2021/12/16 Thu | Introduction to PLM |      |
 
 
 
