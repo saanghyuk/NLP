@@ -58,12 +58,12 @@
 
 
 
-#### 4.BERT, GPT
+#### 4.PLM, BERT, GPT
 
-| date           | contents                                    |      |
-| -------------- | ------------------------------------------- | ---- |
-| 2021/12/16 Thu | Introduction to PLM                         |      |
-| 2021/12/17 Fri | Transfer Learning, Self-Supervised Learning |      |
+| date           | contents                                                     |      |
+| -------------- | ------------------------------------------------------------ | ---- |
+| 2021/12/16 Thu | Introduction to PLM                                          |      |
+| 2021/12/17 Fri | Transfer Learning, Self-Supervised Learning, Embedding, [ELMo](https://arxiv.org/pdf/1802.05365.pdf) |      |
 
 
 
