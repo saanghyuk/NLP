@@ -60,9 +60,10 @@
 
 #### 4.BERT, GPT
 
-| date           | contents            |      |
-| -------------- | ------------------- | ---- |
-| 2021/12/16 Thu | Introduction to PLM |      |
+| date           | contents                                    |      |
+| -------------- | ------------------------------------------- | ---- |
+| 2021/12/16 Thu | Introduction to PLM                         |      |
+| 2021/12/17 Fri | Transfer Learning, Self-Supervised Learning |      |
 
 
 
