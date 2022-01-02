@@ -66,7 +66,7 @@
 | 2021/12/17 Fri | Transfer Learning, Self-Supervised Learning, Embedding, [ELMo](https://arxiv.org/pdf/1802.05365.pdf) |      |
 | 2021/12/20 Mon | Transformer                                                  |      |
 | 2021/12/31 Fri | Seq2Seq, Transformer                                         |      |
-| 2021/2/02 Sun  | Pre-trained Language Model                                   |      |
+| 2021/2/02 Sun  | Pre-trained Language Model(GPT, BERT, BART)                  |      |
 
 
 
