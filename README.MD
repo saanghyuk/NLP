@@ -67,6 +67,7 @@
 | 2021/12/20 Mon | Transformer                                                  |      |
 | 2021/12/31 Fri | Seq2Seq, Transformer                                         |      |
 | 2021/2/02 Sun  | Pre-trained Language Model(GPT, BERT, BART)                  |      |
+|                |                                                              |      |
 
 
 
