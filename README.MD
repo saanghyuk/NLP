@@ -58,7 +58,7 @@
 
 
 
-#### 4.PLM, BERT, GPT
+#### 4.PLM, BERT, GPT, HuggingFace**🤗**
 
 | date           | contents                                                     |                                                              |
 | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -67,7 +67,7 @@
 | 2021/12/20 Mon | Transformer                                                  |                                                              |
 | 2021/12/31 Fri | Seq2Seq, Transformer                                         |                                                              |
 | 2021/1/02 Sun  | Pre-trained Language Model(GPT, BERT, BART)                  |                                                              |
-| 2021/1/04 Tue  | Huggingface Transformers, BERT Trainer                       | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_dataset.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_native.py) |
+| 2021/1/04 Tue  | Huggingface Transformers, BERT Trainer, Pytorch Ignite       | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_dataset.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_native.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/classify_plm.py) |
 
 
 

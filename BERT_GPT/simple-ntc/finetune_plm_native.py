@@ -28,9 +28,10 @@ def define_argparser():
     # - kykim/albert-kor-base
     # - beomi/kcbert-base
     # - beomi/kcbert-large
-    p.add_argument('--pretrained_model_name', type=str, default='beomi/kcbert-base')
+    p.add_argument('--pretrained_model_name', type=str,
+                   default='beomi/kcbert-base')
     p.add_argument('--use_albert', action='store_true')
-    
+
     p.add_argument('--gpu_id', type=int, default=-1)
     p.add_argument('--verbose', type=int, default=2)
 
@@ -66,6 +67,7 @@ def get_loaders(fn, tokenizer, valid_ratio=.2):
 
     # Convert label text to integer value.
     labels = list(map(label_to_index.get, labels))
+    # labaels now become list of integer
 
     # Shuffle before split into train and validation set.
     shuffled = list(zip(texts, labels))
@@ -131,6 +133,8 @@ def main(config):
         '|valid| =', len(valid_loader) * config.batch_size,
     )
 
+    # warming up to original adam
+    # if warm-up ratio is 1/3 -> from 0 iter to total iteration * 1/3, the lr warms up
     n_total_iterations = len(train_loader) * config.n_epochs
     n_warmup_steps = int(n_total_iterations * config.warmup_ratio)
     print(
@@ -142,6 +146,7 @@ def main(config):
     model_loader = AlbertForSequenceClassification if config.use_albert else BertForSequenceClassification
     model = model_loader.from_pretrained(
         config.pretrained_model_name,
+        # use this num_labes to substitute [cls] placement to my classifier
         num_labels=len(index_to_label)
     )
     optimizer = get_optimizer(model, config)
@@ -179,6 +184,7 @@ def main(config):
         'classes': index_to_label,
         'tokenizer': tokenizer,
     }, config.model_fn)
+
 
 if __name__ == '__main__':
     config = define_argparser()

@@ -20,7 +20,7 @@ def define_argparser():
     p.add_argument('--batch_size', type=int, default=256)
     p.add_argument('--top_k', type=int, default=1)
     p.add_argument('--max_length', type=int, default=256)
-    
+
     p.add_argument('--drop_rnn', action='store_true')
     p.add_argument('--drop_cnn', action='store_true')
 
@@ -44,7 +44,7 @@ def read_text(max_length=256):
 
 def define_field():
     '''
-    To avoid use DataLoader class, just declare dummy fields. 
+    To avoid use DataLoader class, just declare dummy fields.
     With those fields, we can retore mapping table between words and indice.
     '''
     return (
@@ -119,7 +119,7 @@ def main(config):
             model.eval()
 
             y_hat = []
-            for idx in range(0, len(lines), config.batch_size):                
+            for idx in range(0, len(lines), config.batch_size):
                 # Converts string to list of index.
                 x = text_field.numericalize(
                     text_field.pad(lines[idx:idx + config.batch_size]),
@@ -144,7 +144,7 @@ def main(config):
 
         for i in range(len(lines)):
             sys.stdout.write('%s\t%s\n' % (
-                ' '.join([classes.itos[indice[i][j]] for j in range(config.top_k)]), 
+                ' '.join([classes.itos[indice[i][j]] for j in range(config.top_k)]),
                 ' '.join(lines[i])
             ))
 

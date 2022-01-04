@@ -53,7 +53,8 @@ def main(config):
 
     with torch.no_grad():
         # Declare model and load pre-trained weights.
-        tokenizer = BertTokenizerFast.from_pretrained(train_config.pretrained_model_name)
+        tokenizer = BertTokenizerFast.from_pretrained(
+            train_config.pretrained_model_name)
         model_loader = AlbertForSequenceClassification if train_config.use_albert else BertForSequenceClassification
         model = model_loader.from_pretrained(
             train_config.pretrained_model_name,
@@ -95,7 +96,8 @@ def main(config):
 
         for i in range(len(lines)):
             sys.stdout.write('%s\t%s\n' % (
-                ' '.join([index_to_label[int(indice[i][j])] for j in range(config.top_k)]), 
+                ' '.join([index_to_label[int(indice[i][j])]
+                          for j in range(config.top_k)]),
                 lines[i]
             ))
 
