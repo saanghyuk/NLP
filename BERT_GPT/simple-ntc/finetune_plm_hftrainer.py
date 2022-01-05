@@ -25,10 +25,13 @@ def define_argparser():
     # - kykim/albert-kor-base
     # - beomi/kcbert-base
     # - beomi/kcbert-large
-    p.add_argument('--pretrained_model_name', type=str, default='beomi/kcbert-base')
+    p.add_argument('--pretrained_model_name', type=str,
+                   default='beomi/kcbert-base')
     p.add_argument('--use_albert', action='store_true')
 
     p.add_argument('--valid_ratio', type=float, default=.2)
+
+    # huggingface trainer uses multi GPU
     p.add_argument('--batch_size_per_device', type=int, default=32)
     p.add_argument('--n_epochs', type=int, default=5)
 
@@ -42,7 +45,7 @@ def define_argparser():
 
 
 def get_datasets(fn, valid_ratio=.2):
-     # Get list of labels and list of texts.
+    # Get list of labels and list of texts.
     labels, texts = read_text(fn)
 
     # Generate label to index map.
@@ -84,7 +87,8 @@ def main(config):
     )
 
     total_batch_size = config.batch_size_per_device * torch.cuda.device_count()
-    n_total_iterations = int(len(train_dataset) / total_batch_size * config.n_epochs)
+    n_total_iterations = int(len(train_dataset) /
+                             total_batch_size * config.n_epochs)
     n_warmup_steps = int(n_total_iterations * config.warmup_ratio)
     print(
         '#total_iters =', n_total_iterations,
@@ -105,6 +109,7 @@ def main(config):
         per_device_eval_batch_size=config.batch_size_per_device,
         warmup_steps=n_warmup_steps,
         weight_decay=0.01,
+        # AMP, default is 32, half precision
         fp16=True,
         evaluation_strategy='epoch',
         logging_steps=n_total_iterations // 100,
@@ -115,7 +120,7 @@ def main(config):
     def compute_metrics(pred):
         labels = pred.label_ids
         preds = pred.predictions.argmax(-1)
-
+        # must return dictionary
         return {
             'accuracy': accuracy_score(labels, preds)
         }
@@ -124,18 +129,19 @@ def main(config):
         model=model,
         args=training_args,
         data_collator=TextClassificationCollator(tokenizer,
-                                       config.max_length,
-                                       with_text=False),
+                                                 config.max_length,
+                                                 with_text=False),
         train_dataset=train_dataset,
         eval_dataset=valid_dataset,
         compute_metrics=compute_metrics,
     )
 
     trainer.train()
-
+    # load_best_model_at_end=True,
     torch.save({
         'rnn': None,
         'cnn': None,
+        # best model
         'bert': trainer.model.state_dict(),
         'config': config,
         'vocab': None,

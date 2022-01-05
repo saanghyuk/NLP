@@ -77,17 +77,19 @@ def main(config):
                 truncation=True,
                 return_tensors="pt",
             )
-
+            # (bs, length)
             x = mini_batch['input_ids']
             x = x.to(device)
             mask = mini_batch['attention_mask']
             mask = mask.to(device)
 
             # Take feed-forward
+            # (bs, 1, |# of class|)
             y_hat = F.softmax(model(x, attention_mask=mask).logits, dim=-1)
 
             y_hats += [y_hat]
         # Concatenate the mini-batch wise result
+        # (bs, |# of class|) -> torch.cat -> (total bs, |# of class|)
         y_hats = torch.cat(y_hats, dim=0)
         # |y_hats| = (len(lines), n_classes)
 
