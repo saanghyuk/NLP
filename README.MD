@@ -69,6 +69,7 @@
 | 2021/1/02 Sun  | Pre-trained Language Model(GPT, BERT, BART)                  |                                                              |
 | 2021/1/04 Tue  | Huggingface Transformers, BERT Trainer, Pytorch Ignite       | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_dataset.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_native.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/classify_plm.py) |
 | 2021/1/05 Wed  | Huggingface Trainer, ALBERT, Knowledge Distillation, Compressed PLMs via Knowledge Distillation, Tiny BERT | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_hftrainer.py) |
+| 2021/1/05 Wed  | Text to Text framework(Google T5), [GPT-3(Language Models are Few-Shot Learners)](https://arxiv.org/pdf/2005.14165.pdf), [GPT crush](https://gptcrush.com/) |                                                              |
 
 
 
