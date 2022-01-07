@@ -1,4 +1,4 @@
-## Studying NLP
+# Studying NLP
 
 > Start Date : 2021/11/18
 
@@ -75,11 +75,11 @@
 
 
 
-### Coursera [NLP](https://www.coursera.org/specializations/natural-language-processing)
+## Coursera [NLP](https://www.coursera.org/specializations/natural-language-processing)
 
 #### 1. Natural Language Processing with Classification and Vector Spaces
 
-| date           | contents                                    |      |
-| -------------- | :------------------------------------------ | ---- |
-| 2021/01/06 Fri | Sentiment Analysis with Logistic Regression |      |
+| date           | contents                                    |                                                              |
+| -------------- | :------------------------------------------ | ------------------------------------------------------------ |
+| 2021/01/07 Fri | Sentiment Analysis with Logistic Regression | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_01_preprocessing.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_02_word%20frequencies.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_03_logistic_regression_model.ipynb) |
 
