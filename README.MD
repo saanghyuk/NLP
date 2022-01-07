@@ -66,12 +66,20 @@
 | 2021/12/17 Fri | Transfer Learning, Self-Supervised Learning, Embedding, [ELMo](https://arxiv.org/pdf/1802.05365.pdf) |                                                              |
 | 2021/12/20 Mon | Transformer                                                  |                                                              |
 | 2021/12/31 Fri | Seq2Seq, Transformer                                         |                                                              |
-| 2021/1/02 Sun  | Pre-trained Language Model(GPT, BERT, BART)                  |                                                              |
-| 2021/1/04 Tue  | Huggingface Transformers, BERT Trainer, Pytorch Ignite       | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_dataset.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_native.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/classify_plm.py) |
-| 2021/1/05 Wed  | Huggingface Trainer, ALBERT, Knowledge Distillation, Compressed PLMs via Knowledge Distillation, Tiny BERT | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_hftrainer.py) |
-| 2021/1/05 Wed  | Text to Text framework(Google T5), [GPT-3(Language Models are Few-Shot Learners)](https://arxiv.org/pdf/2005.14165.pdf), [GPT crush](https://gptcrush.com/) |                                                              |
+| 2021/01/02 Sun | Pre-trained Language Model(GPT, BERT, BART)                  |                                                              |
+| 2021/01/04 Tue | Huggingface Transformers, BERT Trainer, Pytorch Ignite       | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_trainer.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/simple_ntc/bert_dataset.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_native.py), [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/classify_plm.py) |
+| 2021/01/05 Wed | Huggingface Trainer, ALBERT, Knowledge Distillation, Compressed PLMs via Knowledge Distillation, Tiny BERT | [Code](https://github.com/saanghyuk/NLP/blob/main/BERT_GPT/simple-ntc/finetune_plm_hftrainer.py) |
+| 2021/01/06 Thu | Text to Text framework(Google T5), [GPT-3(Language Models are Few-Shot Learners)](https://arxiv.org/pdf/2005.14165.pdf), [GPT crush](https://gptcrush.com/) |                                                              |
 
 
 
 
+
+### Coursera [NLP](https://www.coursera.org/specializations/natural-language-processing)
+
+#### 1. Natural Language Processing with Classification and Vector Spaces
+
+| date           | contents                                    |      |
+| -------------- | :------------------------------------------ | ---- |
+| 2021/01/06 Fri | Sentiment Analysis with Logistic Regression |      |
 
