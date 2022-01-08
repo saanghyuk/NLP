@@ -82,4 +82,5 @@
 | date           | contents                                    |                                                              |
 | -------------- | :------------------------------------------ | ------------------------------------------------------------ |
 | 2021/01/07 Fri | Sentiment Analysis with Logistic Regression | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_01_preprocessing.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_02_word%20frequencies.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_03_logistic_regression_model.ipynb) |
+| 2021/01/08 Sat | Week 1 Assignment                           |                                                              |
 
