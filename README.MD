@@ -82,5 +82,6 @@
 | date           | contents                                                     |                                                              |
 | -------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | 2021/01/07 Fri | Sentiment Analysis with Logistic Regression                  | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_01_preprocessing.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_02_word%20frequencies.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/C1_W1_lecture_nb_03_logistic_regression_model.ipynb) |
-| 2021/01/08 Sat | Week 1 Assignment, Sentiment Analysis with Naïve Bayes, Week 2 Assignment | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/Assignment/C1_W1_Assignment_complete.ipynb) |
+| 2021/01/08 Sat | Week 1 Assignment, Sentiment Analysis with Naïve Bayes, Week 2 Assignment | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/Assignment/C1_W1_Assignment_complete.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2_Na%C3%AFve%20Bayes/Assignment/C1_W2_Assignment_complete.ipynb) |
+| 2021/01/09 Sun | Vector Space Models                                          |                                                              |
 
