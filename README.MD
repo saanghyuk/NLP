@@ -87,7 +87,7 @@
 | 2021/01/10 Mon | Machine Translation, Document Search, Week 4 Assignment      | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/C1_W4_lecture_nb_01_vector_manipulation.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/C1_W4_lecture_nb_02_hash_functions_and_multiplanes.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/Assignment/C1_W4_Assignment_complete.ipynb) |
 #### 2. Natural Language Processing with Probabilistic Models
 
-| date           | contents                                                 |                                                              |
-| -------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| 2021/01/11 Mon | Autocorrect and Minimum edit distance, Week 1 Assignment | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_01_building_the_vocabulary_model.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_02_candidates_from_edits.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/Assignment/C2_W1_Assignment_complete.ipynb) |
+| date           | contents                                                     |                                                              |
+| -------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
+| 2021/01/11 Tue | Autocorrect and Minimum edit distance, Week 1 Assignment(Autocorrect) | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_01_building_the_vocabulary_model.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_02_candidates_from_edits.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/Assignment/C2_W1_Assignment_complete.ipynb) |
 
