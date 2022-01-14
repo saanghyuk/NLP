@@ -92,5 +92,5 @@
 | 2021/01/11 Tue | Autocorrect and Minimum edit distance, Week 1 Assignment(Autocorrect) | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_01_building_the_vocabulary_model.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/C2_W1_lecture_nb_02_candidates_from_edits.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W1_Autocorrect/Assignment/C2_W1_Assignment_complete.ipynb) |
 | 2021/01/12 Wed | Part of Speech Tagging                                       | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/C2_W2_lecture_nb_1_strings_tags.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/C2_W2_lecture_nb_2_numpy.ipynb) |
 | 2022/01/13 Thu | Part of Speech Tagging                                       |                                                              |
-| 2022/01/14 Fri | Viterbi Algorithm, Week 2 Assignment                         |                                                              |
+| 2022/01/14 Fri | Viterbi Algorithm, Week 2 Assignment                         | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/Assignment/C2_W2_Assignment_complete.ipynb) |
 
