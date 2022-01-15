@@ -93,4 +93,5 @@
 | 2021/01/12 Wed | Part of Speech Tagging                                       | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/C2_W2_lecture_nb_1_strings_tags.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/C2_W2_lecture_nb_2_numpy.ipynb) |
 | 2022/01/13 Thu | Part of Speech Tagging                                       |                                                              |
 | 2022/01/14 Fri | Viterbi Algorithm, Week 2 Assignment                         | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W2_POS_tagging/Assignment/C2_W2_Assignment_complete.ipynb) |
+| 2022/01/15 Sat |                                                              |                                                              |
 
