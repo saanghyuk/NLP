@@ -97,5 +97,5 @@
 | 2022/01/16 Sun | Autocomplete, Perplexity, Week 3 Assignment                  | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W3_Autocomplete/C2_W3_lecture_nb_03_oov.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W3_Autocomplete/Assignment/C2_W3_Assignment_complete.ipynb) |
 | 2022/01/17 Mon | Word Embeddings                                              |                                                              |
 | 2022/01/18 Tue | Word Embeddings                                              | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_1_data_prep.ipynb) |
-| 2022/01/19 Wed | Word Embeddings                                              |                                                              |
+| 2022/01/19 Wed | Word Embeddings                                              | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_2_intro_to_CBOW.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_3_training_the_CBOW.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_4_word_embeddings_hands_on.ipynb) |
 
