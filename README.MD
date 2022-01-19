@@ -85,6 +85,7 @@
 | 2021/01/08 Sat | Week 1 Assignment, Sentiment Analysis with Naïve Bayes, Week 2 Assignment | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W1_Logistic%20Regression/Assignment/C1_W1_Assignment_complete.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W2_Na%C3%AFve%20Bayes/C1_W2_lecture_nb_01_visualizing_naive_bayes.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W2_Na%C3%AFve%20Bayes/Assignment/C1_W2_Assignment_complete.ipynb) |
 | 2021/01/09 Sun | Vector Space Models, Week 3 Assignment                       | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W3_Vector%20Space/C1_W3_lecture_nb_01_linear_algebra.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W3_Vector%20Space/C1_W3_lecture_nb_02_manipulating_word_embeddings.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W3_Vector%20Space/C1_W3_lecture_nb_03_pca.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W3_Vector%20Space/Assignment/C1_W3_Assignment_complete.ipynb) |
 | 2021/01/10 Mon | Machine Translation, Document Search, Week 4 Assignment      | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/C1_W4_lecture_nb_01_vector_manipulation.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/C1_W4_lecture_nb_02_hash_functions_and_multiplanes.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C1/W4_Machine%20Translation/Assignment/C1_W4_Assignment_complete.ipynb) |
+
 #### 2. Natural Language Processing with Probabilistic Models
 
 | date           | contents                                                     |                                                              |
@@ -97,6 +98,13 @@
 | 2022/01/16 Sun | Autocomplete, Perplexity, Week 3 Assignment                  | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W3_Autocomplete/C2_W3_lecture_nb_03_oov.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W3_Autocomplete/Assignment/C2_W3_Assignment_complete.ipynb) |
 | 2022/01/17 Mon | Word Embeddings                                              |                                                              |
 | 2022/01/18 Tue | Word Embeddings                                              | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_1_data_prep.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_2_intro_to_CBOW.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_3_training_the_CBOW.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_4_word_embeddings_hands_on.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/C2_W4_lecture_nb_5_word_embeddings_step_by_step.ipynb) |
-| 2022/01/19 Wed | Week 4 Assignment                                            |                                                              |
-|                |                                                              |                                                              |
+| 2022/01/19 Wed | Week 4 Assignment                                            | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C2/W4_WordEmbeddings/Assignment/C2_W4_Assignment_complete.ipynb) |
+
+#### 3. Natural Language Processing with Sequence Models
+
+| date           | contents                               |      |
+| -------------- | -------------------------------------- | ---- |
+| 2022/01/19 Wed | Neural Networks for Sentiment Analysis |      |
+
+
 
