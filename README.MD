@@ -102,11 +102,11 @@
 
 #### 3. Natural Language Processing with Sequence Models
 
-| date           | contents                                                     |      |
-| -------------- | ------------------------------------------------------------ | ---- |
-| 2022/01/19 Wed | Neural Networks for Sentiment Analysis, [Trax](https://github.com/google/trax) |      |
-| 2022/01/21 Fri | Week 1 Assignment                                            |      |
-|                |                                                              |      |
+| date           | contents                                                     |                                                              |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 2022/01/19 Wed | Neural Networks for Sentiment Analysis, [Trax](https://github.com/google/trax) | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W1_Neural_Networks_for_Sentiment%20Analysis/NLP_C3_W1_lecture_nb_01_trax_intro.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W1_Neural_Networks_for_Sentiment%20Analysis/NLP_C3_W1_lecture_nb_02_classes.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W1_Neural_Networks_for_Sentiment%20Analysis/NLP_C3_W1_lecture_nb_03_data_generators.ipynb) |
+| 2022/01/21 Fri | Neural Networks for Sentiment Analysis                       | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W1_Neural_Networks_for_Sentiment%20Analysis/Assignment/C3_W1_Assignment.ipynb) |
+| 2022/01/21 Sat | Week 1 Assignment, N-grams vs. Sequence Models               | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W1_Neural_Networks_for_Sentiment%20Analysis/Assignment/C3_W1_Assignment_complete.ipynb) |
 
 
 
