@@ -105,7 +105,8 @@
 | date           | contents                                                     |      |
 | -------------- | ------------------------------------------------------------ | ---- |
 | 2022/01/19 Wed | Neural Networks for Sentiment Analysis, [Trax](https://github.com/google/trax) |      |
-| 2022/01/21 Fri |                                                              |      |
+| 2022/01/21 Fri | Week 1 Assignment                                            |      |
+|                |                                                              |      |
 
 
 
