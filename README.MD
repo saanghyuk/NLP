@@ -111,5 +111,11 @@
 | 2022/01/24 Mon | Siamese Networks                                             | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W4_Siamese_Networks/C3_W4_lecture_nb_1_siamese.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W4_Siamese_Networks/C3_W4_lecture_nb_2_Modified_Triplet_Loss.ipynb) |
 | 2022/01/25 Tue | Siamese Networks, Week 4 Assignment                          | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C3/W4_Siamese_Networks/Assignment/C3_W4_Assignment_compelte.ipynb) |
 
+#### 4. Natural Language Processing with Attention Models
+
+| date           | contents                   |      |
+| -------------- | -------------------------- | ---- |
+| 2022/01/26 Wed | Neural Machine Translation |      |
+
 
 
