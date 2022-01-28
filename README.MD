@@ -113,9 +113,9 @@
 
 #### 4. Natural Language Processing with Attention Models
 
-| date           | contents                   |      |
-| -------------- | -------------------------- | ---- |
-| 2022/01/26 Wed | Neural Machine Translation |      |
+| date           | contents                   |                                                              |
+| -------------- | -------------------------- | ------------------------------------------------------------ |
+| 2022/01/26 Wed | Neural Machine Translation | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_1_Basic_Attention.ipynb) |
 
 
 
