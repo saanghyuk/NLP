@@ -113,14 +113,15 @@
 
 #### 4. Natural Language Processing with Attention Models
 
-| date           | contents                   |                                                              |
-| -------------- | -------------------------- | ------------------------------------------------------------ |
-| 2022/01/26 Wed | Neural Machine Translation | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_1_Basic_Attention.ipynb) |
-| 2022/01/27 Thu | Neural Machine Translation |                                                              |
-| 2022/01/28 Fri | Neural Machine Translation |                                                              |
-| 2022/01/30 Sun | Neural Machine Translation | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_3_Bleu_Score.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_4_Stack_Semantics.ipynb) |
-| 2022/01/31 Mon | Week 1 Assignment          |                                                              |
-| 2022/02/01 Tue | Week 1 Assignment          |                                                              |
+| date           | contents                                                     |                                                              |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 2022/01/26 Wed | Neural Machine Translation                                   | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_1_Basic_Attention.ipynb) |
+| 2022/01/27 Thu | Neural Machine Translation                                   |                                                              |
+| 2022/01/28 Fri | Neural Machine Translation                                   |                                                              |
+| 2022/01/30 Sun | Neural Machine Translation                                   | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_3_Bleu_Score.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_4_Stack_Semantics.ipynb) |
+| 2022/01/31 Mon | Week 1 Assignment                                            |                                                              |
+| 2022/02/01 Tue | Week 1 Assignment                                            | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/Assignment/C4_W1_Assignment.ipynb) |
+| 2022/02/02 Wed | Text Summarization, [T5 Demo](https://t5-trivia.glitch.me/), [Attention is all you need](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf) |                                                              |
 
 
 
