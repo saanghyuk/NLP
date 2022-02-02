@@ -121,7 +121,7 @@
 | 2022/01/30 Sun | Neural Machine Translation                                   | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_3_Bleu_Score.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/C4_W1_Ungraded_Lab_4_Stack_Semantics.ipynb) |
 | 2022/01/31 Mon | Week 1 Assignment                                            |                                                              |
 | 2022/02/01 Tue | Week 1 Assignment                                            | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W1_Neural_Machine_Translation/Assignment/C4_W1_Assignment.ipynb) |
-| 2022/02/02 Wed | Text Summarization, [T5 Demo](https://t5-trivia.glitch.me/), [Attention is all you need](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf) |                                                              |
+| 2022/02/02 Wed | Text Summarization, [T5 Demo](https://t5-trivia.glitch.me/), [Attention is all you need](https://proceedings.neurips.cc/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf) | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W2_Text_Summarization/C4_W2_Ungraded_Lab_1_Attention.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W2_Text_Summarization/C4_W2_Ungraded_Lab_2_Transformer_Decoder.ipynb) |
 
 
 
