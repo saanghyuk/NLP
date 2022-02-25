@@ -126,6 +126,7 @@
 | 2022/02/04 Fri | Question Answering                                           |                                                              |
 | 2022/02/16 Wed | Question Answering, BPE                                      | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W3_Question_Answering/C4_W3_SentencePiece_and_BPE.ipynb) |
 | 2022/02/24 Thu | HuggingFace, Week 3 Assignment                               | [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W3_Question_Answering/Assignment/C4_W3_Assignment.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W3_Question_Answering/C4_W3_1_Question_Answering_with_BERT_and_HuggingFace_Pytorch_tydiqa.ipynb), [Code](https://github.com/saanghyuk/NLP/blob/main/Coursera_NLP/C4/W3_Question_Answering/C4_W3_2_Question_Answering_with_BERT_and_HuggingFace_Pytorch_tydiqa.ipynb) |
+| 2022/02/25 Fri | [DSBA review for Reformer](https://www.youtube.com/watch?v=6ognBL6DEYM) |                                                              |
 
 
 
